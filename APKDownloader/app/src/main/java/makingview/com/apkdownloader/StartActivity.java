@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Savepoint;
 import java.util.logging.Logger;
 
 import com.google.android.gms.appindexing.AppIndex;
@@ -44,7 +45,7 @@ public class StartActivity extends AppCompatActivity {
 //    ProgressDialog mProgressDialog = null;
     String downloadURL = "";
     String apkName = "";
-
+    String savePath ="";
     private long myDownloadReferende;
     private BroadcastReceiver recieverDownloadComplete;
     private BroadcastReceiver recieverNotificationClicked;
@@ -89,7 +90,9 @@ public class StartActivity extends AppCompatActivity {
                                 .getInt(columnIndex)) {
 
                             Log.d("....", "did you just download the file? : O ");
-                           // String savedPath =
+
+                            installDownloadedAPK();
+
                             Log.d("uri", "asd");
 
                             Integer uriIndex = c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
@@ -106,21 +109,26 @@ public class StartActivity extends AppCompatActivity {
 
     public void installDownloadedAPK()
     {
-        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                .setDataAndType(Uri.parse(Environment.DIRECTORY_DOWNLOADS + apkName),
+        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
+        destination += apkName;
+        final Uri uri = Uri.parse("file://" + destination);
+       Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+                .setDataAndType(uri,
                         "application/vnd.android.package-archive");
         startActivity((promptInstall));
     }
 
     public void downloadPano(View view)
     {
-        downloadURL = "http://video.makingview.no/apps/gearVR/360videos/2012_Red_Bull_F1.p-experience";
+        downloadURL = "https://content.makingview.com/apks/panoaudio.apk";
+        apkName = "panoaudio.apk";
         InitDownload(downloadURL);
     }
 
     public void downloadMenu(View view)
     {
-        downloadURL = "http://video.makingview.no/apps/gearVR/360videos/2012_Red_Bull_F1.p-experience";
+        downloadURL = "https://content.makingview.com/apks/MovieMenu.apk";
+        apkName = "MovieMenu.apk";
         InitDownload(downloadURL);
     }
 
@@ -129,11 +137,8 @@ public class StartActivity extends AppCompatActivity {
         dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(path));
-        String savePath = Environment.DIRECTORY_DOWNLOADS;
-        String fileName = "Red Bull F1.p-experience";
-        apkName = fileName;
         Log.d("asd0", savePath);
-        request.setDestinationInExternalFilesDir(StartActivity.this, savePath, fileName);
+        request.setDestinationInExternalFilesDir(StartActivity.this, savePath, apkName);
         enqueue = dm.enqueue(request);
     }
 

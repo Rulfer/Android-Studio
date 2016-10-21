@@ -2,5 +2,10 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="myCustom">#B0171F</color>
+    <color name="greyish">#4c4445</color>
+    <color name="myGrey">#999999</color>
+    <color name="myPoop">#b8a88a</color>
+    <color name="myEgg">#e7eee6</color>
 </resources>

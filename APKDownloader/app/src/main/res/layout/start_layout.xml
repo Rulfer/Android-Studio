@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/start_layout"
     android:layout_width="match_parent"
@@ -8,30 +9,24 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="makingview.com.apkdownloader.StartActivity">
+    android:background="@color/myPoop"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Click a button to download apk file."
-        android:id="@+id/greetings_text_view"
-        />
+    tools:context="makingview.com.apkdownloader.StartActivity">
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        android:text="Download Movie Menu"
+        android:onClick="downloadMenu"
+        android:id="@+id/download_menu"
+        android:layout_below="@+id/download_pano"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:text="Download Panoaudio"
-        android:layout_below="@+id/greetings_text_view"
         android:onClick="downloadPano"
         android:id="@+id/download_pano"
         />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Download Movie Menu"
-        android:layout_below="@+id/download_pano"
-        android:onClick="downloadMenu"
-        android:id="@+id/download_menu"
-        />
 </RelativeLayout>
