@@ -88,14 +88,19 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
     public void installDownloadedAPK()
     {
-        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";;
+        String destination = Environment.getDataDirectory().getAbsolutePath()+ "/";;
         destination += names.get(0);
         Log.d(".......path", destination);
-        final Uri uri = Uri.parse("file://" + destination);
-        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                .setDataAndType(uri,
-                        "application/vnd.android.package-archive");
-        startActivity((promptInstall));
+        File file = new File(destination);
+        if(file.exists()) {
+            final Uri uri = Uri.parse("file://" + destination);
+            Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(uri,
+                            "application/vnd.android.package-archive");
+            startActivity((promptInstall));
+        }
+        else
+            Log.d("Oh no", "The file does not exist");
     }
 
     @Override
@@ -151,8 +156,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         request.setDescription("Android Data download using DownloadManager.");
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
-        Log.d("SAVE ME HERE", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
+        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.getDataDirectory().toString(), names.get(0)); //Saveposition of APK
+        Log.d("SAVE ME HERE", Environment.getDataDirectory().toString() + "/" + names.get(0));
 
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
@@ -207,9 +212,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 queueUri.remove(0);
                 queueView.remove(0);
             }
-
-
-
         }
     };
 
@@ -298,7 +300,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 statusText = "STATUS_SUCCESSFUL";
                 reasonText = "SUCCESS";
                 //reasonText = "Filename:\n" + filename;
-                installDownloadedAPK();
                 break;
 
         }

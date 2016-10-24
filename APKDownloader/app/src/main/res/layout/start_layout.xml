@@ -14,7 +14,7 @@
     tools:context="makingview.com.apkdownloader.StartActivity">
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="175dp"
         android:layout_height="60dp"
         android:text="Download Panoaudio"
         android:onClick="downloadPano"
@@ -22,7 +22,7 @@
         android:layout_below="@+id/cancel_download"
         />
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="175dp"
         android:layout_height="60dp"
         android:text="Download Movie Menu"
         android:onClick="downloadMenu"
@@ -32,7 +32,7 @@
 
     <Button
         android:visibility="gone"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="Stop current download"
         android:onClick="cancelDownload"
@@ -41,5 +41,29 @@
         android:layout_centerHorizontal="true"
         android:background="@color/myCustom"
         />
+
+    <Button
+        android:visibility="gone"
+
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Install Movie Menu"
+        android:onClick="installMenu"
+        android:id="@+id/install_menu"
+        android:layout_below="@+id/download_pano"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:visibility="gone"
+
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Install Panoaudio"
+        android:onClick="installdPano"
+        android:id="@+id/install_pano"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
