@@ -14,21 +14,47 @@
     tools:context="makingview.com.apkdownloader.StartActivity">
 
     <Button
-        android:layout_width="175dp"
+        android:layout_width="150dp"
         android:layout_height="60dp"
         android:text="Download Panoaudio"
         android:onClick="downloadPano"
         android:id="@+id/download_pano"
         android:layout_below="@+id/cancel_download"
-        />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <Button
-        android:layout_width="175dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="Download Movie Menu"
         android:onClick="downloadMenu"
         android:id="@+id/download_menu"
         android:layout_below="@+id/download_pano"
-        />
+        android:layout_alignRight="@+id/download_pano"
+        android:layout_alignEnd="@+id/download_pano" />
+
+    <Button
+        android:enabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Install Panoaudio"
+        android:onClick="installdPano"
+        android:id="@+id/install_pano"
+        android:layout_below="@+id/cancel_download"
+
+        android:layout_alignLeft="@+id/install_menu"
+        android:layout_alignStart="@+id/install_menu" />
+
+    <Button
+        android:enabled="false"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:text="Install Movie Menu"
+        android:onClick="installMenu"
+        android:id="@+id/install_menu"
+        android:layout_below="@+id/download_pano"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:visibility="gone"
@@ -41,29 +67,4 @@
         android:layout_centerHorizontal="true"
         android:background="@color/myCustom"
         />
-
-    <Button
-        android:visibility="gone"
-
-        android:layout_width="175dp"
-        android:layout_height="60dp"
-        android:text="Install Movie Menu"
-        android:onClick="installMenu"
-        android:id="@+id/install_menu"
-        android:layout_below="@+id/download_pano"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:visibility="gone"
-
-        android:layout_width="175dp"
-        android:layout_height="60dp"
-        android:text="Install Panoaudio"
-        android:onClick="installdPano"
-        android:id="@+id/install_pano"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
 </RelativeLayout>

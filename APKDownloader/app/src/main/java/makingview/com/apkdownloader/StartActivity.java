@@ -86,10 +86,10 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         registerReceiver(downloadReceiver, filter);
     }
 
-    public void installDownloadedAPK()
+    public void installDownloadedAPK(String name)
     {
         String destination = Environment.getDataDirectory().getAbsolutePath()+ "/";;
-        destination += names.get(0);
+        destination += name;
         Log.d(".......path", destination);
         File file = new File(destination);
         if(file.exists()) {
@@ -139,6 +139,16 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 Button CancelDownload = (Button) findViewById(R.id.cancel_download);
                 CancelDownload.setEnabled(false);
                 CancelDownload.setVisibility(View.GONE);
+                break;
+
+            case R.id.install_menu:
+                installDownloadedAPK("MovieMenu.apk");
+                break;
+
+            case R.id.install_pano:
+                installDownloadedAPK("panoaudio.apk");
+                break;
+
         }
     }
 
@@ -179,6 +189,16 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             Cursor cursor = downloadManager.query(DownloadQuery);
             if(cursor.moveToFirst())
             {
+                if(names.get(0) == "MainMenu.apk")
+                {
+                    Button InstallMenu = (Button) findViewById(R.id.install_menu);
+                    InstallMenu.setEnabled(true);
+                }
+                else if(names.get(0) == "panoaudio.apk")
+                {
+                    Button InstallPano = (Button) findViewById(R.id.install_pano);
+                    InstallPano.setEnabled(true);
+                }
                 DownloadStatus(cursor, queueID);
                 Toast toast = Toast.makeText(StartActivity.this,
                         "Download Complete", Toast.LENGTH_LONG);
