@@ -88,6 +88,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
     public void installDownloadedAPK()
     {
+        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";;
         destination += names.get(0);
         Log.d(".......path", destination);
         final Uri uri = Uri.parse("file://" + destination);
