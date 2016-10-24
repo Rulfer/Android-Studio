@@ -16,17 +16,30 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:text="Download Panoaudio"
+        android:onClick="downloadPano"
+        android:id="@+id/download_pano"
+        android:layout_below="@+id/cancel_download"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:text="Download Movie Menu"
         android:onClick="downloadMenu"
         android:id="@+id/download_menu"
         android:layout_below="@+id/download_pano"
         />
+
     <Button
-        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_width="250dp"
         android:layout_height="60dp"
-        android:text="Download Panoaudio"
-        android:onClick="downloadPano"
-        android:id="@+id/download_pano"
+        android:text="Stop current download"
+        android:onClick="cancelDownload"
+        android:id="@+id/cancel_download"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/myCustom"
         />
 
 </RelativeLayout>
