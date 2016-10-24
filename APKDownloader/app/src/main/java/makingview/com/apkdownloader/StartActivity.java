@@ -53,7 +53,13 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
     private DownloadManager downloadManager;
 
-    private List<Long> queueIDs = new ArrayList<>();
+    //private List<Long> queueIDs = new ArrayList<>();
+    Long queueID;
+    private List<String> names = new ArrayList<>();
+    private List<Uri> queueUri = new ArrayList<>();
+    private List<View> queueView = new ArrayList<>();
+
+    Integer counter = 0;
 
 
     /**
@@ -87,7 +93,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     public void installDownloadedAPK()
     {
         String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
-        destination += apkName;
+        destination += names.get(0);
         final Uri uri = Uri.parse("file://" + destination);
        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
                 .setDataAndType(uri,
@@ -101,15 +107,38 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             case R.id.download_menu:
                 Uri menu_uri = Uri.parse("https://content.makingview.com/apks/MovieMenu.apk");
                 apkName = "MovieMenu.apk";
-                queueIDs.add(DownloadData(menu_uri, view));
+                names.add(apkName);
+
+                //queueIDs.add(DownloadData(menu_uri, view));
+
+                if(counter == 0) {
+                    queueID = (DownloadData(menu_uri, view));
+                }
+                else
+                queueUri.add(menu_uri);
+                queueView.add(view);
+                counter++;
                 break;
+
             case R.id.download_pano:
                 Uri pano_uri = Uri.parse("https://content.makingview.com/apks/panoaudio.apk");
                 apkName = "PanoAudio.apk";
-                queueIDs.add(DownloadData(pano_uri, view));
+                names.add(apkName);
+
+                //queueIDs.add(DownloadData(pano_uri, view));
+
+                if(counter == 0) {
+                    queueID = (DownloadData(pano_uri, view));
+                }
+                else
+                    queueUri.add(pano_uri);
+                queueView.add(view);
+                counter++;
                 break;
+
             case R.id.cancel_download:
-                downloadManager.remove(queueIDs.get(0));
+                //downloadManager.remove(queueIDs.get(0));
+                downloadManager.remove(queueID);
         }
     }
 
@@ -170,29 +199,52 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 }
             }*/
 
-            /*DownloadManager.Query DownloadQuery = new DownloadManager.Query();
-            DownloadQuery.setFilterById(queueIDs.get(0));
+            DownloadManager.Query DownloadQuery = new DownloadManager.Query();
+            DownloadQuery.setFilterById(queueID);
 
             Cursor cursor = downloadManager.query(DownloadQuery);
             if(cursor.moveToFirst())
             {
+                Log.d("IS IT DONE AGAIN", "HVA ER POINTET MED TO FELT");
+                DownloadStatus(cursor, queueID);
+                Toast toast = Toast.makeText(StartActivity.this,
+                        "Download Complete", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 25, 400);
+                toast.show();
 
-                DownloadStatus(cursor, queueIDs.get(0));
-            }*/
+                //downloadManager.openDownloadedFile(queueIDs.get(0));
+            }
+            else
+            {
+                Toast toast = Toast.makeText(StartActivity.this,
+                        "Download Cancelled", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 25, 400);
+                toast.show();
+            }
 
-            Toast toast = Toast.makeText(StartActivity.this,
-                    "Download Complete", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 25, 400);
-            toast.show();
+            counter--;
 
-
-            queueIDs.remove(0);
-            if(queueIDs.size() == 0)
+            //queueIDs.remove(0);
+            if(counter == 0)
             {
                 Button CancelDownload = (Button) findViewById(R.id.cancel_download);
                 CancelDownload.setEnabled(false);
                 CancelDownload.setVisibility(View.GONE);
+                names.remove(0);
             }
+            else
+            {
+                queueID = (DownloadData(queueUri.get(0), queueView.get(0)));
+            }
+
+            if(queueUri.size() > 0)
+            {
+                queueUri.remove(0);
+                queueView.remove(0);
+            }
+
+
+
         }
     };
 
@@ -202,8 +254,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         startActivity(i);
     }
 
-    /*private void DownloadStatus(Cursor cursor, long DownloadId){
-
+    private void DownloadStatus(Cursor cursor, long DownloadId)
+    {
         //column for download  status
         int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
         int status = cursor.getInt(columnIndex);
@@ -211,17 +263,17 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
         int reason = cursor.getInt(columnReason);
         //get the download filename
-        int filenameIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
-        String filename = cursor.getString(filenameIndex);
+        //int filenameIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
+        //String filename = cursor.getString(filenameIndex);
 
         String statusText = "";
-        String reasonText = "";*/
+        String reasonText = "";
 
-/*
         switch(status){
             case DownloadManager.STATUS_FAILED:
                 statusText = "STATUS_FAILED";
-                switch(reason){
+
+                /*switch(reason){
                     case DownloadManager.ERROR_CANNOT_RESUME:
                         reasonText = "ERROR_CANNOT_RESUME";
                         break;
@@ -250,8 +302,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                         reasonText = "ERROR_UNKNOWN";
                         break;
                 }
-                break;
-            case DownloadManager.STATUS_PAUSED:
+
+                break;*/
+            /*case DownloadManager.STATUS_PAUSED:
                 statusText = "STATUS_PAUSED";
                 switch(reason){
                     case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
@@ -267,7 +320,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                         reasonText = "PAUSED_WAITING_TO_RETRY";
                         break;
                 }
-                break;
+                break;*/
             case DownloadManager.STATUS_PENDING:
                 statusText = "STATUS_PENDING";
                 reasonText = "PENDING";
@@ -280,11 +333,11 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 statusText = "STATUS_SUCCESSFUL";
                 reasonText = "SUCCESS";
                 //reasonText = "Filename:\n" + filename;
+                //installDownloadedAPK();
                 break;
-        }
 
-        Log.d("STATUS: ", reasonText);
-    }*/
+        }
+    }
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
