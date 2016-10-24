@@ -47,10 +47,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class StartActivity extends AppCompatActivity implements  View.OnClickListener {
-    String downloadURL = "";
-    String apkName = "";
-    String savePath ="";
-
     private DownloadManager downloadManager;
 
     //private List<Long> queueIDs = new ArrayList<>();
@@ -106,38 +102,33 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         switch(view.getId()) {
             case R.id.download_menu:
                 Uri menu_uri = Uri.parse("https://content.makingview.com/apks/MovieMenu.apk");
-                apkName = "MovieMenu.apk";
-                names.add(apkName);
-
-                //queueIDs.add(DownloadData(menu_uri, view));
+                names.add("MovieMenu.apk");
 
                 if(counter == 0) {
                     queueID = (DownloadData(menu_uri, view));
                 }
-                else
-                queueUri.add(menu_uri);
-                queueView.add(view);
+                else {
+                    queueUri.add(menu_uri);
+                    queueView.add(view);
+                }
                 counter++;
                 break;
 
             case R.id.download_pano:
                 Uri pano_uri = Uri.parse("https://content.makingview.com/apks/panoaudio.apk");
-                apkName = "PanoAudio.apk";
-                names.add(apkName);
-
-                //queueIDs.add(DownloadData(pano_uri, view));
+                names.add("panoaudio.apk");
 
                 if(counter == 0) {
                     queueID = (DownloadData(pano_uri, view));
                 }
-                else
+                else {
                     queueUri.add(pano_uri);
-                queueView.add(view);
+                    queueView.add(view);
+                }
                 counter++;
                 break;
 
             case R.id.cancel_download:
-                //downloadManager.remove(queueIDs.get(0));
                 downloadManager.remove(queueID);
         }
     }
@@ -150,13 +141,13 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         //Setting title of request
-        request.setTitle("Downloading " + apkName);
+        request.setTitle("Downloading " + names.get(0));
 
         //Setting description of request
         request.setDescription("Android Data download using DownloadManager.");
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, apkName); //Saveposition of APK
+        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
 
 
         //Enqueue download and save the referenceId
@@ -173,46 +164,18 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            //check if the broadcast message is for our Enqueued download
-            /*long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            String action = intent.getAction();
-            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                long downloadId = intent.getLongExtra(
-                        DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-                Query query = new Query();
-                query.setFilterById(queueIDs.get(0));
-                Cursor c = downloadManager.query(query);
-                if (c.moveToFirst()) {
-                    int columnIndex = c
-                            .getColumnIndex(DownloadManager.COLUMN_STATUS);
-                    if (DownloadManager.STATUS_SUCCESSFUL == c
-                            .getInt(columnIndex)) {
-
-                        Log.d("....", "did you just download the file? : O ");
-
-                        installDownloadedAPK();
-
-                        Integer uriIndex = c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
-
-                    }
-                }
-            }*/
-
             DownloadManager.Query DownloadQuery = new DownloadManager.Query();
             DownloadQuery.setFilterById(queueID);
 
             Cursor cursor = downloadManager.query(DownloadQuery);
             if(cursor.moveToFirst())
             {
-                Log.d("IS IT DONE AGAIN", "HVA ER POINTET MED TO FELT");
                 DownloadStatus(cursor, queueID);
                 Toast toast = Toast.makeText(StartActivity.this,
                         "Download Complete", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP, 25, 400);
                 toast.show();
-
-                //downloadManager.openDownloadedFile(queueIDs.get(0));
+                downloadManager.remove(queueID);
             }
             else
             {
@@ -223,14 +186,13 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             }
 
             counter--;
+            names.remove(0);
 
-            //queueIDs.remove(0);
             if(counter == 0)
             {
                 Button CancelDownload = (Button) findViewById(R.id.cancel_download);
                 CancelDownload.setEnabled(false);
                 CancelDownload.setVisibility(View.GONE);
-                names.remove(0);
             }
             else
             {
@@ -333,7 +295,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 statusText = "STATUS_SUCCESSFUL";
                 reasonText = "SUCCESS";
                 //reasonText = "Filename:\n" + filename;
-                //installDownloadedAPK();
+                installDownloadedAPK();
                 break;
 
         }
