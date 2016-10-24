@@ -47,6 +47,10 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class StartActivity extends AppCompatActivity implements  View.OnClickListener {
+    String downloadURL = "";
+    String apkName = "";
+    String savePath ="";
+
     private DownloadManager downloadManager;
 
     private List<Long> queueIDs = new ArrayList<>();
@@ -98,25 +102,32 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 Uri menu_uri = Uri.parse("https://content.makingview.com/apks/MovieMenu.apk");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 apkName = "MovieMenu.apk";
                 queueIDs.add(DownloadData(menu_uri, view));
 =======
 =======
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
                 names.add("MovieMenu.apk");
+=======
+                apkName = "MovieMenu.apk";
+                names.add(apkName);
+
+                //queueIDs.add(DownloadData(menu_uri, view));
+>>>>>>> parent of e879c76... Shit is broken now
 
                 if(counter == 0) {
                     queueID = (DownloadData(menu_uri, view));
                 }
-                else {
-                    queueUri.add(menu_uri);
-                    queueView.add(view);
-                }
+                else
+                queueUri.add(menu_uri);
+                queueView.add(view);
                 counter++;
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
                 break;
             case R.id.download_pano:
                 Uri pano_uri = Uri.parse("https://content.makingview.com/apks/panoaudio.apk");
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 apkName = "PanoAudio.apk";
@@ -125,24 +136,33 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 =======
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
                 names.add("panoaudio.apk");
+=======
+                apkName = "PanoAudio.apk";
+                names.add(apkName);
+
+                //queueIDs.add(DownloadData(pano_uri, view));
+>>>>>>> parent of e879c76... Shit is broken now
 
                 if(counter == 0) {
                     queueID = (DownloadData(pano_uri, view));
                 }
-                else {
+                else
                     queueUri.add(pano_uri);
-                    queueView.add(view);
-                }
+                queueView.add(view);
                 counter++;
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
                 break;
             case R.id.cancel_download:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 downloadManager.remove(queueIDs.get(0));
 =======
 =======
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
+=======
+                //downloadManager.remove(queueIDs.get(0));
+>>>>>>> parent of e879c76... Shit is broken now
                 downloadManager.remove(queueID);
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
         }
@@ -156,13 +176,13 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         //Setting title of request
-        request.setTitle("Downloading " + names.get(0));
+        request.setTitle("Downloading " + apkName);
 
         //Setting description of request
         request.setDescription("Android Data download using DownloadManager.");
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
+        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, apkName); //Saveposition of APK
 
 
         //Enqueue download and save the referenceId
@@ -181,6 +201,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         public void onReceive(Context context, Intent intent) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of e879c76... Shit is broken now
 
             //check if the broadcast message is for our Enqueued download
             /*long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
@@ -207,11 +230,14 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 }
             }*/
 
+<<<<<<< HEAD
             /*DownloadManager.Query DownloadQuery = new DownloadManager.Query();
             DownloadQuery.setFilterById(queueIDs.get(0));
 =======
 =======
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
+=======
+>>>>>>> parent of e879c76... Shit is broken now
             DownloadManager.Query DownloadQuery = new DownloadManager.Query();
             DownloadQuery.setFilterById(queueID);
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
@@ -219,6 +245,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             Cursor cursor = downloadManager.query(DownloadQuery);
             if(cursor.moveToFirst())
             {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -236,12 +263,16 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 =======
 =======
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
+=======
+                Log.d("IS IT DONE AGAIN", "HVA ER POINTET MED TO FELT");
+>>>>>>> parent of e879c76... Shit is broken now
                 DownloadStatus(cursor, queueID);
                 Toast toast = Toast.makeText(StartActivity.this,
                         "Download Complete", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP, 25, 400);
                 toast.show();
-                downloadManager.remove(queueID);
+
+                //downloadManager.openDownloadedFile(queueIDs.get(0));
             }
             else
             {
@@ -252,8 +283,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             }
 
             counter--;
-            names.remove(0);
 
+            //queueIDs.remove(0);
             if(counter == 0)
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
             {
@@ -262,9 +293,13 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 CancelDownload.setVisibility(View.GONE);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
+=======
+                names.remove(0);
+>>>>>>> parent of e879c76... Shit is broken now
             }
             else
             {
@@ -360,12 +395,16 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 //reasonText = "Filename:\n" + filename;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 installDownloadedAPK();
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
 =======
                 installDownloadedAPK();
 >>>>>>> parent of 80ae4a5... Revert "Shit is broken now"
+=======
+                //installDownloadedAPK();
+>>>>>>> parent of e879c76... Shit is broken now
                 break;
         }
 
