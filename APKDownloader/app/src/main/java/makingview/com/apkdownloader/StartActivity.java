@@ -93,6 +93,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
     public void installDownloadedAPK(String fileName)
     {
+        Log.d("fileName" , fileName);
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String ext = MimeTypeMap.getFileExtensionFromUrl((fileName));
         String type = map.getMimeTypeFromExtension(ext);
@@ -293,6 +294,15 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
+    }
+
+    class Member
+    {
+        boolean downloaded = false;
+        String localPath = "";
+        String name;
+        Uri uri;
+        View view;
     }
 }
 
