@@ -83,33 +83,12 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         Button DownloadPano = (Button) findViewById(R.id.download_pano);
         DownloadPano.setOnClickListener(this);
 
-        Button InstallPano = (Button) findViewById(R.id.install_pano);
-        InstallPano.setOnClickListener(this);
-
-        Button InstallMenu = (Button) findViewById(R.id.install_menu);
-        InstallMenu.setOnClickListener(this);
-
         Button CancelDownload = (Button) findViewById(R.id.cancel_download);
         CancelDownload.setOnClickListener(this);
         CancelDownload.setEnabled(false);
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
-
-        //request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
-
-        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        destination += "/MovieMenu.apk";
-        Log.d("Oh", destination);
-        Log.d("ss", StartActivity.this.toString());
-        File file = new File(destination);
-        if(file.exists()) {
-            Log.d("Oh yes", "The file exist");
-            InstallMenu.setEnabled(true);
-        }
-        else {
-            Log.d("Oh no", "The file does not exist");
-        }
     }
 
     public void installDownloadedAPK(String fileName)
@@ -122,26 +101,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         Log.d("fack off", "openFile Trying to open file: " + Uri.fromFile(new File(fileName)));
         install.setDataAndType(Uri.fromFile(new File(fileName)), type);
         startActivity(install);
-        /*try {
-            mCx.startActivity(install);
-        } catch (Exception e) {
-            //Si no hay ninguna app capaz de abrir el archivo, fallará.
-            e.printStackTrace();
-            Toast.makeText(mCx, mCx.getString(R.string.sin_app_archivo), Toast.LENGTH_LONG).show();
-        }*/
-        /*String destination = "/sdcard/Android/data/makingview.com.apkdownloader/files/Download/";
-        destination += name;
-        Log.d(".......path", destination);
-        File file = new File(destination);
-        if(file.exists()) {
-            final Uri uri = Uri.parse("file://" + destination);
-            Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(uri,
-                            "application/vnd.android.package-archive");
-            startActivity((promptInstall));
-        }
-        else
-            Log.d("Oh no", "The file does not exist");*/
     }
 
     @Override
@@ -181,15 +140,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 CancelDownload.setEnabled(false);
                 CancelDownload.setVisibility(View.GONE);
                 break;
-
-            case R.id.install_menu:
-                installDownloadedAPK("MovieMenu.apk");
-                break;
-
-            case R.id.install_pano:
-                installDownloadedAPK("panoaudio.apk");
-                break;
-
         }
     }
 
@@ -209,19 +159,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         //Set the local destination for the downloaded file to a path within the application's external files directory
         request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
 
-
-
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
-        Log.d("SAVE ME 1", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
-
-        View cancelButton = findViewById(R.id.cancel_download);
-        Log.d("SAVE ME 2", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
-        cancelButton.setEnabled(true);
-        Log.d("SAVE ME 3", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
-        cancelButton.setVisibility(View.VISIBLE);
-        Log.d("SAVE ME 4", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
-
 
         return downloadReference;
     }
@@ -244,25 +183,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
                 installDownloadedAPK(savedFilePath);
 
-                Log.d("Names", names.get(0));
-
-                if(names.get(0) == "MovieMenu.apk")
-                {
-                    Log.d("Activate button", "MovieMenu.apk");
-                    Button InstallMenu = (Button) findViewById(R.id.install_menu);
-                    InstallMenu.setEnabled(true);
-                }
-                if(names.get(0) == "panoaudio.apk")
-                {
-                    Log.d("Activate button", "panoaudio.apk");
-                    Button InstallPano = (Button) findViewById(R.id.install_pano);
-                    InstallPano.setEnabled(true);
-                }
                 DownloadStatus(cursor, queueID);
-                Toast toast = Toast.makeText(StartActivity.this,
-                        "Download Complete", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 25, 400);
-                toast.show();
                 downloadManager.remove(queueID);
             }
             else
