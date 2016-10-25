@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -60,7 +61,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private List<View> queueView = new ArrayList<>();
 
     Integer counter = 0;
-
+    Uri storedUri;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -95,23 +96,40 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
 
+        //request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
 
-        /*String destination = "/sdcard/Android/data/makingview.com.apkdownloader/files/Download";
-        destination += "/new1.txt";
+        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        destination += "/MovieMenu.apk";
         Log.d("Oh", destination);
-
+        Log.d("ss", StartActivity.this.toString());
         File file = new File(destination);
         if(file.exists()) {
             Log.d("Oh yes", "The file exist");
             InstallMenu.setEnabled(true);
         }
-        else
-            Log.d("Oh no", "The file does not exist");*/
+        else {
+            Log.d("Oh no", "The file does not exist");
+        }
     }
 
-    public void installDownloadedAPK(String name)
+    public void installDownloadedAPK(String fileName)
     {
-        String destination = "/sdcard/Android/data/makingview.com.apkdownloader/files/Download/";
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        String ext = MimeTypeMap.getFileExtensionFromUrl((fileName));
+        String type = map.getMimeTypeFromExtension(ext);
+
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        Log.d("fack off", "openFile Trying to open file: " + Uri.fromFile(new File(fileName)));
+        install.setDataAndType(Uri.fromFile(new File(fileName)), type);
+        startActivity(install);
+        /*try {
+            mCx.startActivity(install);
+        } catch (Exception e) {
+            //Si no hay ninguna app capaz de abrir el archivo, fallará.
+            e.printStackTrace();
+            Toast.makeText(mCx, mCx.getString(R.string.sin_app_archivo), Toast.LENGTH_LONG).show();
+        }*/
+        /*String destination = "/sdcard/Android/data/makingview.com.apkdownloader/files/Download/";
         destination += name;
         Log.d(".......path", destination);
         File file = new File(destination);
@@ -123,7 +141,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             startActivity((promptInstall));
         }
         else
-            Log.d("Oh no", "The file does not exist");
+            Log.d("Oh no", "The file does not exist");*/
     }
 
     @Override
@@ -190,14 +208,20 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
         request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
-        Log.d("SAVE ME HERE", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
+
+
 
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
+        Log.d("SAVE ME 1", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
 
         View cancelButton = findViewById(R.id.cancel_download);
+        Log.d("SAVE ME 2", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
         cancelButton.setEnabled(true);
+        Log.d("SAVE ME 3", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
         cancelButton.setVisibility(View.VISIBLE);
+        Log.d("SAVE ME 4", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
+
 
         return downloadReference;
     }
@@ -212,6 +236,14 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             Cursor cursor = downloadManager.query(DownloadQuery);
             if(cursor.moveToFirst())
             {
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
+                cursor.moveToFirst();
+                int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                //This is String I pass to openFile method
+                String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                installDownloadedAPK(savedFilePath);
+
                 Log.d("Names", names.get(0));
 
                 if(names.get(0) == "MovieMenu.apk")
