@@ -159,8 +159,14 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         //Set the local destination for the downloaded file to a path within the application's external files directory
         request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
 
+
+
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
+
+        View cancelButton = findViewById(R.id.cancel_download);
+        cancelButton.setEnabled(true);
+        cancelButton.setVisibility(View.VISIBLE);
 
         return downloadReference;
     }
@@ -182,9 +188,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 //This is String I pass to openFile method
                 String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
                 installDownloadedAPK(savedFilePath);
-
-                DownloadStatus(cursor, queueID);
-                downloadManager.remove(queueID);
             }
             else
             {

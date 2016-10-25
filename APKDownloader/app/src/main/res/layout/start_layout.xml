@@ -14,9 +14,9 @@
     tools:context="makingview.com.apkdownloader.StartActivity">
 
     <Button
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Download Panoaudio"
+        android:text="Update Panoaudio"
         android:onClick="downloadPano"
         android:id="@+id/download_pano"
         android:layout_below="@+id/cancel_download"
@@ -26,7 +26,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Download Movie Menu"
+        android:text="Update Movie Menu"
         android:onClick="downloadMenu"
         android:id="@+id/download_menu"
         android:layout_below="@+id/download_pano"
@@ -35,7 +35,7 @@
 
     <Button
         android:visibility="gone"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="60dp"
         android:text="Stop current download"
         android:onClick="cancelDownload"
