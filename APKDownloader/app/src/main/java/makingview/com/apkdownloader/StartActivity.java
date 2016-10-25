@@ -6,15 +6,19 @@ import android.app.DownloadManager.Request;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.PowerManager;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -78,17 +82,36 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         Button DownloadPano = (Button) findViewById(R.id.download_pano);
         DownloadPano.setOnClickListener(this);
 
+        Button InstallPano = (Button) findViewById(R.id.install_pano);
+        InstallPano.setOnClickListener(this);
+
+        Button InstallMenu = (Button) findViewById(R.id.install_menu);
+        InstallMenu.setOnClickListener(this);
+
         Button CancelDownload = (Button) findViewById(R.id.cancel_download);
         CancelDownload.setOnClickListener(this);
         CancelDownload.setEnabled(false);
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
+
+
+        /*String destination = "/sdcard/Android/data/makingview.com.apkdownloader/files/Download";
+        destination += "/new1.txt";
+        Log.d("Oh", destination);
+
+        File file = new File(destination);
+        if(file.exists()) {
+            Log.d("Oh yes", "The file exist");
+            InstallMenu.setEnabled(true);
+        }
+        else
+            Log.d("Oh no", "The file does not exist");*/
     }
 
     public void installDownloadedAPK(String name)
     {
-        String destination = Environment.getDataDirectory().getAbsolutePath()+ "/";;
+        String destination = "/sdcard/Android/data/makingview.com.apkdownloader/files/Download/";
         destination += name;
         Log.d(".......path", destination);
         File file = new File(destination);
@@ -166,8 +189,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         request.setDescription("Android Data download using DownloadManager.");
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.getDataDirectory().toString(), names.get(0)); //Saveposition of APK
-        Log.d("SAVE ME HERE", Environment.getDataDirectory().toString() + "/" + names.get(0));
+        request.setDestinationInExternalFilesDir(StartActivity.this, Environment.DIRECTORY_DOWNLOADS, names.get(0)); //Saveposition of APK
+        Log.d("SAVE ME HERE", Environment.DIRECTORY_DOWNLOADS + "/" + names.get(0));
 
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
@@ -189,13 +212,17 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             Cursor cursor = downloadManager.query(DownloadQuery);
             if(cursor.moveToFirst())
             {
-                if(names.get(0) == "MainMenu.apk")
+                Log.d("Names", names.get(0));
+
+                if(names.get(0) == "MovieMenu.apk")
                 {
+                    Log.d("Activate button", "MovieMenu.apk");
                     Button InstallMenu = (Button) findViewById(R.id.install_menu);
                     InstallMenu.setEnabled(true);
                 }
-                else if(names.get(0) == "panoaudio.apk")
+                if(names.get(0) == "panoaudio.apk")
                 {
+                    Log.d("Activate button", "panoaudio.apk");
                     Button InstallPano = (Button) findViewById(R.id.install_pano);
                     InstallPano.setEnabled(true);
                 }
@@ -259,55 +286,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         switch(status){
             case DownloadManager.STATUS_FAILED:
                 statusText = "STATUS_FAILED";
-
-                /*switch(reason){
-                    case DownloadManager.ERROR_CANNOT_RESUME:
-                        reasonText = "ERROR_CANNOT_RESUME";
-                        break;
-                    case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                        reasonText = "ERROR_DEVICE_NOT_FOUND";
-                        break;
-                    case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
-                        reasonText = "ERROR_FILE_ALREADY_EXISTS";
-                        break;
-                    case DownloadManager.ERROR_FILE_ERROR:
-                        reasonText = "ERROR_FILE_ERROR";
-                        break;
-                    case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                        reasonText = "ERROR_HTTP_DATA_ERROR";
-                        break;
-                    case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                        reasonText = "ERROR_INSUFFICIENT_SPACE";
-                        break;
-                    case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                        reasonText = "ERROR_TOO_MANY_REDIRECTS";
-                        break;
-                    case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                        reasonText = "ERROR_UNHANDLED_HTTP_CODE";
-                        break;
-                    case DownloadManager.ERROR_UNKNOWN:
-                        reasonText = "ERROR_UNKNOWN";
-                        break;
-                }
-
-                break;*/
-            /*case DownloadManager.STATUS_PAUSED:
-                statusText = "STATUS_PAUSED";
-                switch(reason){
-                    case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
-                        reasonText = "PAUSED_QUEUED_FOR_WIFI";
-                        break;
-                    case DownloadManager.PAUSED_UNKNOWN:
-                        reasonText = "PAUSED_UNKNOWN";
-                        break;
-                    case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
-                        reasonText = "PAUSED_WAITING_FOR_NETWORK";
-                        break;
-                    case DownloadManager.PAUSED_WAITING_TO_RETRY:
-                        reasonText = "PAUSED_WAITING_TO_RETRY";
-                        break;
-                }
-                break;*/
             case DownloadManager.STATUS_PENDING:
                 statusText = "STATUS_PENDING";
                 reasonText = "PENDING";
