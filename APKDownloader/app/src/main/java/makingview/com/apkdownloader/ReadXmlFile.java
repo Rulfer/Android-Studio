@@ -51,6 +51,8 @@ public class ReadXmlFile
 
                     case XmlPullParser.END_TAG:
                         Log.d("END_TAG", text);
+                        if(name.equals("videosize"))
+                            names.add(text);
                         /*if(name.equals("country")){
                             country = text;
                         }

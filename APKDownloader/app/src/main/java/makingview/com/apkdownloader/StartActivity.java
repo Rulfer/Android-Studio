@@ -47,6 +47,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Savepoint;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -64,12 +65,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class StartActivity extends AppCompatActivity implements  View.OnClickListener {
     private DownloadManager downloadManager;
+    private ReadXmlFile obj;
+    private String xmlUrl = "http://video.makingview.no/apps/gearVR/demo.xml";
 
     //private List<Long> queueIDs = new ArrayList<>();
     Long queueID;
     private List<String> names = new ArrayList<>();
     private List<Uri> queueUri = new ArrayList<>();
     private List<View> queueView = new ArrayList<>();
+
+    private List<String> addedNames = new ArrayList<>();
 
     Integer counter = 0;
     Uri storedUri;
@@ -100,6 +105,19 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
+
+        obj = new ReadXmlFile(xmlUrl);
+        obj.fetchXML();
+
+        while(obj.parsingComplete) {
+            addedNames = new ArrayList<>(obj.getNames());
+        }
+
+        for(Iterator<String> i = addedNames.iterator(); i.hasNext();)
+        {
+            String item = i.next();
+            System.out.println(item);
+        }
     }
 
     public void installDownloadedAPK(String fileName)
