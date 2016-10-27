@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -21,15 +22,19 @@ import android.os.PowerManager;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewDebug;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +71,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class StartActivity extends AppCompatActivity implements  View.OnClickListener {
     private DownloadManager downloadManager;
     private ReadXmlFile obj;
-    private String xmlUrl = "http://video.makingview.no/apps/gearVR/demo.xml";
+    private String xmlUrl = "http://video.makingview.no/apps/gearVR/makingview.xml";
 
     //private List<Long> queueIDs = new ArrayList<>();
     Long queueID;
@@ -93,11 +98,11 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-        Button DownloadMenu = (Button) findViewById(R.id.download_menu);
+        /*Button DownloadMenu = (Button) findViewById(R.id.download_menu);
         DownloadMenu.setOnClickListener(this);
 
         Button DownloadPano = (Button) findViewById(R.id.download_pano);
-        DownloadPano.setOnClickListener(this);
+        DownloadPano.setOnClickListener(this);*/
 
         Button CancelDownload = (Button) findViewById(R.id.cancel_download);
         CancelDownload.setOnClickListener(this);
@@ -113,11 +118,56 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             addedNames = new ArrayList<>(obj.getNames());
         }
 
-        for(Iterator<String> i = addedNames.iterator(); i.hasNext();)
+        createButtons();
+    }
+
+    private void createButtons() {
+        ArrayList<Button> myButtons = new ArrayList<>();
+        final Button CancelDownload = (Button) findViewById(R.id.cancel_download);
+        myButtons.add(CancelDownload);
+        for(int i = 0; i < addedNames.size(); i++)
         {
-            String item = i.next();
+            String item = addedNames.get(i);
             System.out.println(item);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+
+
+            RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+            /*if(i == 0)
+                p.addRule(RelativeLayout.BELOW, R.id.cancel_download);
+            else
+                p.addRule(RelativeLayout.BELOW, R.id.button_layout);*/
+
+            p.addRule(RelativeLayout.BELOW, myButtons.get(0).getId());
+
+            Button btn = new Button(this);
+            myButtons.add(btn);
+            btn.setText(item);
+            btn.setId(i);
+            final int id_ = btn.getId();
+
+            LinearLayout layout = (LinearLayout) findViewById(R.id.button_layout);
+            layout.setLayoutParams(p);
+
+            layout.addView(btn, params);
+
+            btn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    //Add download to queue here
+                    CancelDownload.setEnabled(true);
+                    CancelDownload.setVisibility(View.VISIBLE);
+                    Toast.makeText(view.getContext(),
+                            "Button clicked index = " + id_, Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
         }
+
     }
 
     public void installDownloadedAPK(String fileName)
