@@ -34,7 +34,6 @@ public class ReadXmlFile
     public void parseXMLAndStoreIt(XmlPullParser myParser) {
         int event;
         String text=null;
-
         try {
             event = myParser.getEventType();
 

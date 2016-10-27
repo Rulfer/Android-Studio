@@ -117,7 +117,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         while(obj.parsingComplete) {
             addedNames = new ArrayList<>(obj.getNames());
         }
-
         createButtons();
     }
 
@@ -131,23 +130,15 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             System.out.println(item);
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
 
             RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-            /*if(i == 0)
-                p.addRule(RelativeLayout.BELOW, R.id.cancel_download);
-            else
-                p.addRule(RelativeLayout.BELOW, R.id.button_layout);*/
-
             p.addRule(RelativeLayout.BELOW, myButtons.get(0).getId());
 
             Button btn = new Button(this);
             myButtons.add(btn);
-            btn.setText(item);
+            btn.setText("Videosize: " + item + "Mb");
             btn.setId(i);
             final int id_ = btn.getId();
 
