@@ -80,6 +80,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private List<View> queueView = new ArrayList<>();
 
     private List<String> addedNames = new ArrayList<>();
+    private List<String> addedUrls = new ArrayList<>();
+    private String tempUrl = "";
+    private String tempName ="";
 
     Integer counter = 0;
     Uri storedUri;
@@ -116,6 +119,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         while(obj.parsingComplete) {
             addedNames = new ArrayList<>(obj.getNames());
+            addedUrls = new ArrayList<>(obj.getUrls());
         }
         createButtons();
     }
@@ -126,8 +130,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         myButtons.add(CancelDownload);
         for(int i = 0; i < addedNames.size(); i++)
         {
-            String item = addedNames.get(i);
-            System.out.println(item);
+            tempName = addedNames.get(i);
+            tempUrl = addedUrls.get(i);
+            System.out.println(tempName);
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -138,8 +143,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
             Button btn = new Button(this);
             myButtons.add(btn);
-            btn.setText("Videosize: " + item + "Mb");
+            btn.setText("Videosize: " + tempName + "Mb");
             btn.setId(i);
+            btn.setHeight(230);
             final int id_ = btn.getId();
 
             LinearLayout layout = (LinearLayout) findViewById(R.id.button_layout);
@@ -149,12 +155,16 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
             btn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    //Add download to queue here
-                    CancelDownload.setEnabled(true);
-                    CancelDownload.setVisibility(View.VISIBLE);
-                    Toast.makeText(view.getContext(),
-                            "Button clicked index = " + id_, Toast.LENGTH_SHORT)
-                            .show();
+                    Uri urlUri = Uri.parse(tempUrl);
+                    names.add(tempName);
+                    if(counter == 0)
+                        queueID = (DownloadData(urlUri, view));
+                    else
+                    {
+                        queueUri.add(urlUri);
+                        queueView.add(view);
+                    }
+                    counter++;
                 }
             });
         }
@@ -177,7 +187,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onClick(View view) {
         switch(view.getId()) {
-            case R.id.download_menu:
+            /*case R.id.download_menu:
                 Uri menu_uri = Uri.parse("https://content.makingview.com/apks/MovieMenu.apk");
                 names.add("MovieMenu.apk");
 
@@ -203,7 +213,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                     queueView.add(view);
                 }
                 counter++;
-                break;
+                break;*/
 
             case R.id.cancel_download:
                 downloadManager.remove(queueID);

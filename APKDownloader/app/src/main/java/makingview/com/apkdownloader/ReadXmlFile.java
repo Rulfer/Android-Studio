@@ -52,6 +52,13 @@ public class ReadXmlFile
                         Log.d("END_TAG", text);
                         if(name.equals("videosize"))
                             names.add(text);
+                        if(name.equals("url"))
+                        {
+                            String temp = text + ".p-experience";
+                            System.out.println(temp);
+                            urls.add(temp);
+                        }
+
                         /*if(name.equals("country")){
                             country = text;
                         }
