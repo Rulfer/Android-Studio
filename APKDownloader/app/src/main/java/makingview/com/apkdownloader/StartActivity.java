@@ -1,5 +1,6 @@
 package makingview.com.apkdownloader;
 
+import android.app.Application;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.app.DownloadManager.Request;
@@ -47,10 +48,13 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Savepoint;
@@ -74,8 +78,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class StartActivity extends AppCompatActivity implements  View.OnClickListener {
     private DownloadManager downloadManager;
     private ReadXmlFile obj;
+    private SaveAndLoad sl;
     //private String xmlUrl = "http://video.makingview.no/apps/gearVR/makingview.xml";
     private String xmlUrl = "http://video.makingview.no/apps/gearVR/";
+    private String savePath = Environment.DIRECTORY_DOCUMENTS;
+
     //private List<Long> queueIDs = new ArrayList<>();
     Long queueID;
     private List<String> names = new ArrayList<>();
@@ -104,11 +111,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-        /*Button DownloadMenu = (Button) findViewById(R.id.download_menu);
-        DownloadMenu.setOnClickListener(this);
-
-        Button DownloadPano = (Button) findViewById(R.id.download_pano);
-        DownloadPano.setOnClickListener(this);*/
+        File dir = new File(savePath);
+        dir.mkdir();
 
         Button CancelDownload = (Button) findViewById(R.id.cancel_download);
         CancelDownload.setOnClickListener(this);
@@ -122,10 +126,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 if(i == EditorInfo.IME_ACTION_DONE)
                 {
                     String inputText = textView.getText().toString();
-                    Toast toast = Toast.makeText(StartActivity.this,
-                            "Input: " + inputText, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 25, 400);
-                    toast.show();
 
                     editText.setEnabled(false);
                     editText.setVisibility(View.GONE);
@@ -137,8 +137,23 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             }
         });
 
+        Log.d("found file?", "" + findSave());
+
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
+    }
+
+    private boolean findSave()
+    {
+        File file = new File(savePath + "/sav.data");
+        if(file.exists())
+        {
+            //sl = new SaveAndLoad(savePath + "/sav.data");
+            //sl.Load(file);
+            return true;
+        }
+        else
+            return false;
     }
 
     private void getXmlDoc(String code)
@@ -146,13 +161,24 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         String newPath = xmlUrl + code + ".xml";
         obj = new ReadXmlFile(newPath);
         obj.fetchXML();
-        Log.d("error test", "test " + 1);
+
         while(obj.parsingComplete && obj.downloadFailed == false) {
             addedNames = new ArrayList<>(obj.getNames());
             addedUrls = new ArrayList<>(obj.getUrls());
         }
+
         if(obj.downloadFailed == false)
+        {
             createButtons();
+
+            sl = new SaveAndLoad(savePath);
+            sl.Save(code);
+
+            //String[] saveText = String.valueOf(code).split(System.getProperty("line.separator"));
+            //File file = new File(path);
+            //sl = new SaveAndLoad(path);
+            //sl.Save(file, saveText);
+        }
         else
             downloadFailed();
     }
