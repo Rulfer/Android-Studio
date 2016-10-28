@@ -17,29 +17,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <Button
-            android:visibility="gone"
-
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Update Panoaudio"
-            android:onClick="downloadPano"
-            android:id="@+id/download_pano"
-            android:layout_below="@+id/cancel_download"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:visibility="gone"
-
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Update Movie Menu"
-            android:onClick="downloadMenu"
-            android:id="@+id/download_menu"
-            android:layout_below="@+id/download_pano"
-            android:layout_alignRight="@+id/download_pano"
-            android:layout_alignEnd="@+id/download_pano" />
 
         <Button
             android:visibility="gone"
@@ -54,18 +31,32 @@
             android:background="@color/myCustom"
             />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingRight="40dp"
-                android:paddingLeft="40dp"
-                android:layout_marginLeft="50dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:id="@+id/button_layout"
-                android:layout_below="@+id/cancel_download"
-                >
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingRight="40dp"
+            android:paddingLeft="40dp"
+            android:layout_marginLeft="50dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:id="@+id/button_layout"
+            android:layout_alignParentTop="true">
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Code"
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/edit_code"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="200dp"
+            android:imeOptions="actionDone"
+            android:imeActionLabel="Over and out!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            />
+
 
     </RelativeLayout>
 </ScrollView>

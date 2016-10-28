@@ -1,5 +1,6 @@
 package makingview.com.apkdownloader;
 
+import android.net.ConnectivityManager;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -12,12 +13,14 @@ import java.util.List;
 
 public class ReadXmlFile
 {
+    StartActivity sa;
     private List<String> names = new ArrayList<>();
     private List<String> urls = new ArrayList<>();
 
     private String urlString = null;
     private XmlPullParserFactory xmlFactoryObject;
     public volatile boolean parsingComplete = true;
+    public volatile boolean downloadFailed = false;
 
     public ReadXmlFile(String url){
         this.urlString = url;
@@ -37,7 +40,7 @@ public class ReadXmlFile
         try {
             event = myParser.getEventType();
 
-            while (event != XmlPullParser.END_DOCUMENT) {
+            while (event != XmlPullParser.END_DOCUMENT && downloadFailed == false) {
                 String name=myParser.getName();
 
                 switch (event){
@@ -114,6 +117,7 @@ public class ReadXmlFile
                     stream.close();
                 }
                 catch (Exception e) {
+                    downloadFailed = true;
                     e.printStackTrace();
                 }
             }

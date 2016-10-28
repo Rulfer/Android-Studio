@@ -27,11 +27,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -71,8 +74,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class StartActivity extends AppCompatActivity implements  View.OnClickListener {
     private DownloadManager downloadManager;
     private ReadXmlFile obj;
-    private String xmlUrl = "http://video.makingview.no/apps/gearVR/makingview.xml";
-
+    //private String xmlUrl = "http://video.makingview.no/apps/gearVR/makingview.xml";
+    private String xmlUrl = "http://video.makingview.no/apps/gearVR/";
     //private List<Long> queueIDs = new ArrayList<>();
     Long queueID;
     private List<String> names = new ArrayList<>();
@@ -111,17 +114,57 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         CancelDownload.setOnClickListener(this);
         CancelDownload.setEnabled(false);
 
+        final EditText editText = (EditText) findViewById(R.id.edit_code);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent){
+                boolean handled = false;
+                if(i == EditorInfo.IME_ACTION_DONE)
+                {
+                    String inputText = textView.getText().toString();
+                    Toast toast = Toast.makeText(StartActivity.this,
+                            "Input: " + inputText, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP, 25, 400);
+                    toast.show();
+
+                    editText.setEnabled(false);
+                    editText.setVisibility(View.GONE);
+                    getXmlDoc(inputText);
+
+                }
+
+                return handled;
+            }
+        });
+
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
+    }
 
-        obj = new ReadXmlFile(xmlUrl);
+    private void getXmlDoc(String code)
+    {
+        String newPath = xmlUrl + code + ".xml";
+        obj = new ReadXmlFile(newPath);
         obj.fetchXML();
-
-        while(obj.parsingComplete) {
+        Log.d("error test", "test " + 1);
+        while(obj.parsingComplete && obj.downloadFailed == false) {
             addedNames = new ArrayList<>(obj.getNames());
             addedUrls = new ArrayList<>(obj.getUrls());
         }
-        createButtons();
+        if(obj.downloadFailed == false)
+            createButtons();
+        else
+            downloadFailed();
+    }
+
+    private void downloadFailed()
+    {
+        Log.d("asdasd", "HEY");
+
+        final EditText editText = (EditText) findViewById(R.id.edit_code);
+        editText.setEnabled(true);
+        editText.setVisibility(View.VISIBLE);
+
     }
 
     private void createButtons() {
@@ -187,34 +230,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onClick(View view) {
         switch(view.getId()) {
-            /*case R.id.download_menu:
-                Uri menu_uri = Uri.parse("https://content.makingview.com/apks/MovieMenu.apk");
-                names.add("MovieMenu.apk");
-
-                if(counter == 0) {
-                    queueID = (DownloadData(menu_uri, view));
-                }
-                else {
-                    queueUri.add(menu_uri);
-                    queueView.add(view);
-                }
-                counter++;
-                break;
-
-            case R.id.download_pano:
-                Uri pano_uri = Uri.parse("https://content.makingview.com/apks/panoaudio.apk");
-                names.add("panoaudio.apk");
-
-                if(counter == 0) {
-                    queueID = (DownloadData(pano_uri, view));
-                }
-                else {
-                    queueUri.add(pano_uri);
-                    queueView.add(view);
-                }
-                counter++;
-                break;*/
-
             case R.id.cancel_download:
                 downloadManager.remove(queueID);
                 Button CancelDownload = (Button) findViewById(R.id.cancel_download);
