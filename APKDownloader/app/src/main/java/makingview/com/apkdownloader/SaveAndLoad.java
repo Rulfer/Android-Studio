@@ -1,29 +1,13 @@
 package makingview.com.apkdownloader;
 
-import android.app.Activity;
-import android.content.Context;
-import android.icu.util.Output;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
-/**
- * Created by Bård on 28.10.2016.
- */
-
-public class SaveAndLoad extends AppCompatActivity
+public class SaveAndLoad
 {
     final static String fileName = "data.txt";
     //final static String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/instinctcoder/readwrite/" ;
@@ -36,70 +20,29 @@ public class SaveAndLoad extends AppCompatActivity
         this.pathString = path;
     }
 
-    public static boolean Save(String data)
+    public void Save(String data)
     {
-
        try
        {
-            File temp = new File(Environment.DIRECTORY_DOWNLOADS);
-            if(!temp.exists())
-                temp.mkdirs();
-            File file = new File("/sdcard/Download/data.txt");
-            /*if (!file.exists()) {
-                Log.d("save tester", "file does not exist");
-                file.createNewFile();
-                Log.d("save tester", "file should exist now");
-            }*/
-            FileOutputStream fileOutputStream = new FileOutputStream(file,true);
-            fileOutputStream.write((data + System.getProperty("line.separator")).getBytes());
+           String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+            String fileName = "/plsSaveMe.txt";
+           File file = new File(path + fileName);
 
-            return true;
+           PrintWriter writer = new PrintWriter(file, "UTF-8");
+           writer.println("hello, world");
+           writer.close();
         }
        catch(FileNotFoundException ex)
        {
             Log.d("save tester", ex.getMessage());
        }
-       catch(IOException ex)
+       catch(Exception e)
        {
-            Log.d("save tester", ex.getMessage());
+            Log.d("save tester", e.getMessage());
        }
-        return  false;
     }
 
-    /*public static void Save(File file, String[] data)
-    {
-        FileOutputStream fos = null;
-        try
-        {
-            fos = new FileOutputStream(file);
-        }
-        catch (FileNotFoundException e) {e.printStackTrace();}
-        try
-        {
-            try
-            {
-                for (int i = 0; i<data.length; i++)
-                {
-                    fos.write(data[i].getBytes());
-                    if (i < data.length-1)
-                    {
-                        fos.write("\n".getBytes());
-                    }
-                }
-            }
-            catch (IOException e) {e.printStackTrace();}
-        }
-        finally
-        {
-            try
-            {
-                fos.close();
-            }
-            catch (IOException e) {e.printStackTrace();}
-        }
-    }
-
-    public static String[] Load(File file)
+    /*public static String[] Load(File file)
     {
         FileInputStream fis = null;
         try

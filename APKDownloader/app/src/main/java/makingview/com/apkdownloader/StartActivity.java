@@ -1,5 +1,7 @@
 package makingview.com.apkdownloader;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
@@ -23,6 +25,7 @@ import android.os.PowerManager;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,6 +58,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Savepoint;
@@ -97,6 +101,11 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     Integer counter = 0;
     Uri storedUri;
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -110,9 +119,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
-        File dir = new File(savePath);
-        dir.mkdir();
 
         Button CancelDownload = (Button) findViewById(R.id.cancel_download);
         CancelDownload.setOnClickListener(this);
@@ -137,10 +143,24 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             }
         });
 
-        Log.d("found file?", "" + findSave());
+        verifyStoragePermissions(StartActivity.this);
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 
     private boolean findSave()
@@ -171,9 +191,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         {
             createButtons();
 
-            sl = new SaveAndLoad(savePath);
-            sl.Save(code);
-
+            //sl = new SaveAndLoad(savePath);
+            //sl.Save(code);
+            Save(code);
             //String[] saveText = String.valueOf(code).split(System.getProperty("line.separator"));
             //File file = new File(path);
             //sl = new SaveAndLoad(path);
@@ -181,6 +201,30 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         }
         else
             downloadFailed();
+    }
+
+    public void Save(String data)
+    {
+        try
+        {
+            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+
+            String fileName = "/sav.data";
+            File file = new File(path + fileName);
+
+            PrintWriter writer = new PrintWriter(file, "UTF-8");
+            writer.println("hello, world");
+            writer.close();
+            Log.d("save tester", "SAVED!");
+        }
+        catch(FileNotFoundException ex)
+        {
+            Log.d("save tester", ex.getMessage());
+        }
+        catch(Exception e)
+        {
+            Log.d("save tester", e.getMessage());
+        }
     }
 
     private void downloadFailed()
