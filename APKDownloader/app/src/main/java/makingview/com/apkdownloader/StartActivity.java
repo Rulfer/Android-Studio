@@ -2,10 +2,12 @@ package makingview.com.apkdownloader;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Application;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.app.DownloadManager.Request;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -64,6 +66,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Savepoint;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -482,18 +485,24 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onStop() {
         super.onStop();
-        /*
-                            Uri urlUri = Uri.parse(tempUrl);
-                    names.add(tempName);
-                    if(counter == 0)
-                        queueID = (DownloadData(urlUri, view));
-                    else
-                    {
-                        queueUri.add(urlUri);
-                        queueView.add(view);
-                    }
-                    counter++;
-         */
+        // time at which alarm will be scheduled here alarm is scheduled at 1 day from current time,
+        // we fetch  the current time in milliseconds and added 1 day time
+        // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
+
+        //Long time = new GregorianCalendar().getTimeInMillis()+24*60*60*1000;
+        Long time = new GregorianCalendar().getTimeInMillis()+10000;
+        // create an Intent and set the class which will execute when Alarm triggers, here we have
+        // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
+        // alarm triggers and
+        //we call the method inside onRecieve() method pf Alarmreciever class
+        Intent intentAlarm = new Intent(this, AlarmReceiver.class);
+
+        // create the object
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        //set the alarm for particular time
+        alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+        Toast.makeText(this, "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
