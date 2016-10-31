@@ -24,13 +24,18 @@ public class SaveAndLoad
     {
         try
         {
-            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+            //String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
+            File createPath = new File(path);
+
+            if(!createPath.exists())
+                createPath.mkdirs();
 
             String fileName = "/sav.data";
             File file = new File(path + fileName);
 
             PrintWriter writer = new PrintWriter(file, "UTF-8");
-            writer.println("hello, world");
+            writer.println(data);
             writer.close();
             Log.d("save tester", "SAVED!");
         }

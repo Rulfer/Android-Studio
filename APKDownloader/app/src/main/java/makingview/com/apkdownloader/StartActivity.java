@@ -184,16 +184,11 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             downloadFailed();
     }
 
-
-
     private void downloadFailed()
     {
-        Log.d("asdasd", "HEY");
-
         final EditText editText = (EditText) findViewById(R.id.edit_code);
         editText.setEnabled(true);
         editText.setVisibility(View.VISIBLE);
-
     }
 
     private void createButtons() {
