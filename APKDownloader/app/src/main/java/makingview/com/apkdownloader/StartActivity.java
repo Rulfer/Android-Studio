@@ -194,14 +194,15 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         if(obj.downloadFailed == false)
         {
-            if(userPromptedToWriteNewCode)
+            /*if(userPromptedToWriteNewCode)
             {
-                for(int i = 0; i < myButtons.size(); i++) {
+                for(int i = 0; i < myButtons.size(); i++)
+                {
                     ViewGroup layout = (ViewGroup) myButtons.get(i).getParent();
                     layout.removeView(myButtons.get(i));
                 }
                 myButtons.clear();
-            }
+            }*/
             createButtons();
 
             sl = new SaveAndLoad(savePath);
@@ -245,6 +246,12 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     }
 
     private void createButtons() {
+        for (int i = 0; i < myButtons.size(); i++)
+        {
+            myButtons.get(i).setVisibility(View.GONE);
+        }
+        myButtons.clear();
+        
         final Button TopButton = (Button) findViewById(R.id.lay_below_me);
         myButtons.add(TopButton);
         for(int i = 0; i < addedNames.size(); i++)
