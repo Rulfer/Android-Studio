@@ -89,11 +89,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private SaveAndLoad sl;
     private RequestPermissions rp;
 
-    //private String xmlUrl = "http://video.makingview.no/apps/gearVR/makingview.xml";
     private String xmlUrl = "http://video.makingview.no/apps/gearVR/";
     private String savePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
 
-    //private List<Long> queueIDs = new ArrayList<>();
     Long queueID;
     private List<String> names = new ArrayList<>();
     private List<Uri> queueUri = new ArrayList<>();
@@ -107,9 +105,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private String tempName ="";
 
     Integer counter = 0;
-    Boolean inputFieldVisible = false;
     Boolean userPromptedToWriteNewCode = false;
-    //Boolean firstRunOfCode = true;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
