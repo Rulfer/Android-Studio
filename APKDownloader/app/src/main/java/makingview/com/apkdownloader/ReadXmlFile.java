@@ -1,6 +1,5 @@
 package makingview.com.apkdownloader;
 
-import android.net.ConnectivityManager;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -57,7 +56,7 @@ public class ReadXmlFile
                             names.add(text);
                         if(name.equals("url"))
                         {
-                            String temp = text + ".m-experience";
+                            String temp = text + ".p-experience";
                             System.out.println(temp);
                             urls.add(temp);
                         }

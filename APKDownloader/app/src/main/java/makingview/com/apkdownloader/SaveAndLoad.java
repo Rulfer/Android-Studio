@@ -1,7 +1,6 @@
 package makingview.com.apkdownloader;
 
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
