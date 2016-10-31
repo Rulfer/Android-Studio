@@ -96,6 +96,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private List<Uri> queueUri = new ArrayList<>();
     private List<View> queueView = new ArrayList<>();
 
+    ArrayList<Button> myButtons = new ArrayList<>();
+
     private List<String> addedNames = new ArrayList<>();
     private List<String> addedUrls = new ArrayList<>();
     private String tempUrl = "";
@@ -192,6 +194,14 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         if(obj.downloadFailed == false)
         {
+            if(userPromptedToWriteNewCode)
+            {
+                for(int i = 0; i < myButtons.size(); i++) {
+                    ViewGroup layout = (ViewGroup) myButtons.get(i).getParent();
+                    layout.removeView(myButtons.get(i));
+                }
+                myButtons.clear();
+            }
             createButtons();
 
             sl = new SaveAndLoad(savePath);
@@ -235,7 +245,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     }
 
     private void createButtons() {
-        ArrayList<Button> myButtons = new ArrayList<>();
         final Button TopButton = (Button) findViewById(R.id.lay_below_me);
         myButtons.add(TopButton);
         for(int i = 0; i < addedNames.size(); i++)
@@ -308,7 +317,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 break;
 
             case R.id.code_input:
-                Log.d("reopen thing", "Open");
                 userPromptedToWriteNewCode = true;
                 downloadFailed();
                 break;
