@@ -123,6 +123,10 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         CancelDownload.setOnClickListener(this);
         CancelDownload.setEnabled(false);
 
+        Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
+        LayoutButton.setEnabled(false);
+        LayoutButton.setVisibility(View.GONE);
+
         final EditText editText = (EditText) findViewById(R.id.edit_code);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener(){
             @Override
@@ -134,8 +138,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
                     editText.setEnabled(false);
                     editText.setVisibility(View.GONE);
+                    Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
+                    LayoutButton.setVisibility(View.GONE);
                     getXmlDoc(inputText);
-
                 }
 
                 return handled;
@@ -188,14 +193,17 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private void downloadFailed()
     {
         final EditText editText = (EditText) findViewById(R.id.edit_code);
-        editText.setEnabled(true);
+        //editText.setEnabled(true);
         editText.setVisibility(View.VISIBLE);
+
+        Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
+        LayoutButton.setVisibility(View.INVISIBLE);
     }
 
     private void createButtons() {
         ArrayList<Button> myButtons = new ArrayList<>();
-        final Button CancelDownload = (Button) findViewById(R.id.cancel_download);
-        myButtons.add(CancelDownload);
+        final Button TopButton = (Button) findViewById(R.id.lay_below_me);
+        myButtons.add(TopButton);
         for(int i = 0; i < addedNames.size(); i++)
         {
             tempName = addedNames.get(i);
@@ -260,6 +268,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 Button CancelDownload = (Button) findViewById(R.id.cancel_download);
                 CancelDownload.setEnabled(false);
                 CancelDownload.setVisibility(View.GONE);
+                Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
+                LayoutButton.setEnabled(false);
+                LayoutButton.setVisibility(View.GONE);
                 break;
         }
     }
@@ -288,6 +299,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         View cancelButton = findViewById(R.id.cancel_download);
         cancelButton.setEnabled(true);
         cancelButton.setVisibility(View.VISIBLE);
+
+        Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
+        LayoutButton.setVisibility(View.INVISIBLE);
 
         return downloadReference;
     }
@@ -325,6 +339,10 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             Button CancelDownload = (Button) findViewById(R.id.cancel_download);
             CancelDownload.setEnabled(false);
             CancelDownload.setVisibility(View.GONE);
+
+            Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
+            LayoutButton.setEnabled(false);
+            LayoutButton.setVisibility(View.GONE);
 
             if(counter > 0)
             {
@@ -416,14 +434,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         client.disconnect();
     }
 
-    class Member
-    {
-        boolean downloaded = false;
-        String localPath = "";
-        String name;
-        Uri uri;
-        View view;
-    }
 }
 
 

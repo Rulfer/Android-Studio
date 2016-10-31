@@ -57,7 +57,7 @@ public class ReadXmlFile
                             names.add(text);
                         if(name.equals("url"))
                         {
-                            String temp = text + ".p-experience";
+                            String temp = text + ".m-experience";
                             System.out.println(temp);
                             urls.add(temp);
                         }

@@ -31,6 +31,18 @@
             android:background="@color/myCustom"
             />
 
+        <Button
+            android:visibility="gone"
+
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:text="Lay below me"
+            android:id="@+id/lay_below_me"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/myCustom"
+            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -50,12 +62,12 @@
             android:inputType="text"
             android:ems="10"
             android:id="@+id/edit_code"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="200dp"
             android:imeOptions="actionDone"
             android:imeActionLabel="Over and out!"
             android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-            />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
 
     </RelativeLayout>
