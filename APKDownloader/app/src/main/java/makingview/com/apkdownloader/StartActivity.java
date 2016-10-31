@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,9 +102,9 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private String tempName ="";
 
     Integer counter = 0;
-    Uri storedUri;
-
-
+    Boolean inputFieldVisible = false;
+    Boolean userPromptedToWriteNewCode = false;
+    //Boolean firstRunOfCode = true;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -123,9 +124,13 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         CancelDownload.setOnClickListener(this);
         CancelDownload.setEnabled(false);
 
+        Button CodeButton = (Button) findViewById(R.id.code_input);
+        CodeButton.setOnClickListener(this);
+
         Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
         LayoutButton.setEnabled(false);
         LayoutButton.setVisibility(View.GONE);
+
 
         final EditText editText = (EditText) findViewById(R.id.edit_code);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener(){
@@ -134,10 +139,15 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 boolean handled = false;
                 if(i == EditorInfo.IME_ACTION_DONE)
                 {
+                    Log.d("asdsadm", "asdasd");
                     String inputText = textView.getText().toString();
 
                     editText.setEnabled(false);
                     editText.setVisibility(View.GONE);
+
+                    Button ShowInput = (Button) findViewById(R.id.code_input);
+                    ShowInput.setVisibility(View.VISIBLE);
+
                     Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
                     LayoutButton.setVisibility(View.GONE);
                     getXmlDoc(inputText);
@@ -162,10 +172,11 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         String result = sl.Load(savePath + "/sav.data");
 
         if(result == "error")
+        {
             downloadFailed();
+        }
         else
             getXmlDoc(result);
-
     }
 
     private void getXmlDoc(String code)
@@ -186,18 +197,41 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             sl = new SaveAndLoad(savePath);
             sl.Save(code);
         }
-        else
-            downloadFailed();
+        else {
+            if(!userPromptedToWriteNewCode)
+                downloadFailed();
+            else
+                closeInputField();
+        }
     }
 
     private void downloadFailed()
     {
         final EditText editText = (EditText) findViewById(R.id.edit_code);
-        //editText.setEnabled(true);
+        editText.setEnabled(true);
         editText.setVisibility(View.VISIBLE);
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
 
         Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
         LayoutButton.setVisibility(View.INVISIBLE);
+        Button InputButton = (Button) findViewById(R.id.code_input);
+        InputButton.setVisibility(View.GONE);
+    }
+
+    private void closeInputField()
+    {
+        final EditText editText = (EditText) findViewById(R.id.edit_code);
+        editText.setEnabled(false);
+        editText.setVisibility(View.GONE);
+
+        Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
+        LayoutButton.setEnabled(false);
+        LayoutButton.setVisibility(View.GONE);
+        Button InputButton = (Button) findViewById(R.id.code_input);
+        InputButton.setVisibility(View.VISIBLE);
+        userPromptedToWriteNewCode = false;
     }
 
     private void createButtons() {
@@ -271,6 +305,12 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
                 LayoutButton.setEnabled(false);
                 LayoutButton.setVisibility(View.GONE);
+                break;
+
+            case R.id.code_input:
+                Log.d("reopen thing", "Open");
+                userPromptedToWriteNewCode = true;
+                downloadFailed();
                 break;
         }
     }
@@ -427,6 +467,18 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onStop() {
         super.onStop();
+        /*
+                            Uri urlUri = Uri.parse(tempUrl);
+                    names.add(tempName);
+                    if(counter == 0)
+                        queueID = (DownloadData(urlUri, view));
+                    else
+                    {
+                        queueUri.add(urlUri);
+                        queueView.add(view);
+                    }
+                    counter++;
+         */
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
