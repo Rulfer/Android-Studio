@@ -142,9 +142,10 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             }
         });
 
-        rp = new RequestPermissions(StartActivity.this);
+        editText.setVisibility(View.GONE);
 
-        findSave();
+        rp = new RequestPermissions(StartActivity.this); //Request permissions
+        findSave(); //Check for save file
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
@@ -153,8 +154,13 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private void findSave()
     {
         sl = new SaveAndLoad(savePath);
-        String lame = sl.Load(savePath + "/sav.data");
-        Log.d("loadresult", lame);
+        String result = sl.Load(savePath + "/sav.data");
+
+        if(result == "error")
+            downloadFailed();
+        else
+            getXmlDoc(result);
+
     }
 
     private void getXmlDoc(String code)
