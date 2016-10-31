@@ -22,24 +22,26 @@ public class SaveAndLoad
 
     public void Save(String data)
     {
-       try
-       {
-           String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-            String fileName = "/plsSaveMe.txt";
-           File file = new File(path + fileName);
+        try
+        {
+            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
 
-           PrintWriter writer = new PrintWriter(file, "UTF-8");
-           writer.println("hello, world");
-           writer.close();
+            String fileName = "/sav.data";
+            File file = new File(path + fileName);
+
+            PrintWriter writer = new PrintWriter(file, "UTF-8");
+            writer.println("hello, world");
+            writer.close();
+            Log.d("save tester", "SAVED!");
         }
-       catch(FileNotFoundException ex)
-       {
+        catch(FileNotFoundException ex)
+        {
             Log.d("save tester", ex.getMessage());
-       }
-       catch(Exception e)
-       {
+        }
+        catch(Exception e)
+        {
             Log.d("save tester", e.getMessage());
-       }
+        }
     }
 
     /*public static String[] Load(File file)

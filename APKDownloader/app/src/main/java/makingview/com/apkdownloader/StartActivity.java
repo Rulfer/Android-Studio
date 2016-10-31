@@ -83,6 +83,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     private DownloadManager downloadManager;
     private ReadXmlFile obj;
     private SaveAndLoad sl;
+    private RequestPermissions rp;
+
     //private String xmlUrl = "http://video.makingview.no/apps/gearVR/makingview.xml";
     private String xmlUrl = "http://video.makingview.no/apps/gearVR/";
     private String savePath = Environment.DIRECTORY_DOCUMENTS;
@@ -101,10 +103,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     Integer counter = 0;
     Uri storedUri;
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -143,24 +142,11 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
             }
         });
 
-        verifyStoragePermissions(StartActivity.this);
+        rp = new RequestPermissions(StartActivity.this);
+
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
-    }
-
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
     }
 
     private boolean findSave()
@@ -191,41 +177,14 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         {
             createButtons();
 
-            //sl = new SaveAndLoad(savePath);
-            //sl.Save(code);
-            Save(code);
-            //String[] saveText = String.valueOf(code).split(System.getProperty("line.separator"));
-            //File file = new File(path);
-            //sl = new SaveAndLoad(path);
-            //sl.Save(file, saveText);
+            sl = new SaveAndLoad(savePath);
+            sl.Save(code);
         }
         else
             downloadFailed();
     }
 
-    public void Save(String data)
-    {
-        try
-        {
-            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
 
-            String fileName = "/sav.data";
-            File file = new File(path + fileName);
-
-            PrintWriter writer = new PrintWriter(file, "UTF-8");
-            writer.println("hello, world");
-            writer.close();
-            Log.d("save tester", "SAVED!");
-        }
-        catch(FileNotFoundException ex)
-        {
-            Log.d("save tester", ex.getMessage());
-        }
-        catch(Exception e)
-        {
-            Log.d("save tester", e.getMessage());
-        }
-    }
 
     private void downloadFailed()
     {
