@@ -87,7 +87,7 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
     //private String xmlUrl = "http://video.makingview.no/apps/gearVR/makingview.xml";
     private String xmlUrl = "http://video.makingview.no/apps/gearVR/";
-    private String savePath = Environment.DIRECTORY_DOCUMENTS;
+    private String savePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
 
     //private List<Long> queueIDs = new ArrayList<>();
     Long queueID;
@@ -144,22 +144,17 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         rp = new RequestPermissions(StartActivity.this);
 
+        findSave();
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
     }
 
-    private boolean findSave()
+    private void findSave()
     {
-        File file = new File(savePath + "/sav.data");
-        if(file.exists())
-        {
-            //sl = new SaveAndLoad(savePath + "/sav.data");
-            //sl.Load(file);
-            return true;
-        }
-        else
-            return false;
+        sl = new SaveAndLoad(savePath);
+        String lame = sl.Load(savePath + "/sav.data");
+        Log.d("loadresult", lame);
     }
 
     private void getXmlDoc(String code)

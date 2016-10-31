@@ -1,11 +1,14 @@
 package makingview.com.apkdownloader;
 
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class SaveAndLoad
 {
@@ -24,7 +27,6 @@ public class SaveAndLoad
     {
         try
         {
-            //String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
             String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
             File createPath = new File(path);
 
@@ -49,47 +51,17 @@ public class SaveAndLoad
         }
     }
 
-    /*public static String[] Load(File file)
+    public String Load(String path)
     {
-        FileInputStream fis = null;
         try
         {
-            fis = new FileInputStream(file);
+            String content = new Scanner(new File(path)).useDelimiter("\\Z").next();
+            System.out.print(content);
+            return content;
         }
-        catch (FileNotFoundException e) {e.printStackTrace();}
-        InputStreamReader isr = new InputStreamReader(fis);
-        BufferedReader br = new BufferedReader(isr);
-
-        String test;
-        int anzahl=0;
-        try
+        catch(IOException e)
         {
-            while ((test=br.readLine()) != null)
-            {
-                anzahl++;
-            }
+            return "error";
         }
-        catch (IOException e) {e.printStackTrace();}
-
-        try
-        {
-            fis.getChannel().position(0);
-        }
-        catch (IOException e) {e.printStackTrace();}
-
-        String[] array = new String[anzahl];
-
-        String line;
-        int i = 0;
-        try
-        {
-            while((line=br.readLine())!=null)
-            {
-                array[i] = line;
-                i++;
-            }
-        }
-        catch (IOException e) {e.printStackTrace();}
-        return array;
-    }*/
+    }
 }
