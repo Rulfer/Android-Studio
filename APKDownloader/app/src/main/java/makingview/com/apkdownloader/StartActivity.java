@@ -164,6 +164,8 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         editText.setVisibility(View.GONE);
 
+        //cancelAlarm();
+
         rp = new RequestPermissions(StartActivity.this); //Request permissions
         findSave(); //Check for save file
 
@@ -197,15 +199,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
 
         if(obj.downloadFailed == false)
         {
-            /*if(userPromptedToWriteNewCode)
-            {
-                for(int i = 0; i < myButtons.size(); i++)
-                {
-                    ViewGroup layout = (ViewGroup) myButtons.get(i).getParent();
-                    layout.removeView(myButtons.get(i));
-                }
-                myButtons.clear();
-            }*/
             createButtons();
 
             sl = new SaveAndLoad(savePath);
@@ -297,7 +290,6 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
                 }
             });
         }
-
     }
 
     public void installDownloadedAPK(String fileName)
@@ -485,6 +477,23 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
     @Override
     public void onStop() {
         super.onStop();
+
+        initiateAlarm();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cancelAlarm(StartActivity.this);
+    }
+
+    private void initiateAlarm()
+    {
         // time at which alarm will be scheduled here alarm is scheduled at 1 day from current time,
         // we fetch  the current time in milliseconds and added 1 day time
         // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
@@ -503,13 +512,15 @@ public class StartActivity extends AppCompatActivity implements  View.OnClickLis
         //set the alarm for particular time
         alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
         Toast.makeText(this, "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
     }
 
+    private void cancelAlarm(Context context)
+    {
+        AlarmManager alarmManager=(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        alarmManager.cancel(pendingIntent);
+    }
 }
 
 
