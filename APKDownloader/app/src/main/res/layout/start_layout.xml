@@ -12,11 +12,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/myPoop"
 
-    tools:context="makingview.com.apkdownloader.StartActivity">
+    tools:context=".StartActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/layout_relative"
+        >
+
+
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
 
         <Button
             android:visibility="gone"
@@ -48,37 +54,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/code_input"
-            android:onClick="newInput"
-            />
+            android:onClick="newInput" />
+
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingRight="40dp"
-            android:paddingLeft="60dp"
-            android:layout_marginLeft="50dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:id="@+id/button_layout"
-            android:layout_alignParentTop="true">
-        </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="60dp"
+        android:layout_marginLeft="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:id="@+id/button_layout"
+        android:layout_alignParentTop="true">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:textSize="25dp"
-            android:hint="Code"
-            android:inputType="text"
-            android:ems="10"
-            android:id="@+id/edit_code"
-            android:imeOptions="actionDone"
-            android:imeActionLabel="Over and out!"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-            android:layout_below="@+id/cancel_download"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
+           <!-- <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="75dp"
+                android:src="@drawable/ohyea"
+                android:id="@+id/imageButton"
+                android:layout_below="@+id/button_layout"
+                android:layout_toRightOf="@+id/code_input"
+                android:layout_toEndOf="@+id/code_input" />
+                -->
+    </LinearLayout>
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:textSize="25dp"
+        android:hint="Code"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/edit_code"
+        android:imeOptions="actionDone"
+        android:imeActionLabel="Over and out!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:layout_below="@+id/cancel_download"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp" />
 
     </RelativeLayout>
 </ScrollView>
