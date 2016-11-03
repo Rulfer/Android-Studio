@@ -10,8 +10,11 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.File;
 
 public class DownloadClass
 {
@@ -70,7 +73,11 @@ public class DownloadClass
                 int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
                 //This is String I pass to openFile method
                 String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                //installDownloadedAPK(savedFilePath);
+                installDownloadedAPK(savedFilePath, context);
+                Toast toast = Toast.makeText(context,
+                        "Download completed", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 25, 400);
+                toast.show();
             }
             else
             {
@@ -81,4 +88,15 @@ public class DownloadClass
             }
         }
     };
+
+    public void installDownloadedAPK(String fileName, Context context)
+    {
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        String ext = MimeTypeMap.getFileExtensionFromUrl((fileName));
+        String type = map.getMimeTypeFromExtension(ext);
+
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setDataAndType(Uri.fromFile(new File(fileName)), type);
+        context.startActivity(install);
+    }
 }
