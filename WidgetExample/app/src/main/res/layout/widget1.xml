@@ -6,18 +6,28 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:layout_margin="4dp"
-    android:background="#60000000">
+    android:background="#600000">
 
     <TextView
         android:id="@+id/widget1label"
         android:layout_height="wrap_content"
+        android:text="Click this button"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="wrap_content"
         />
 
     <Button
-        android:text="Click Me!"
+        android:text="Launch Movie Menu"
         android:id="@+id/button"
+        android:onClick="launcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <Button
+        android:text="Update Movie Menu"
+        android:id="@+id/update"
+        android:onClick="updater"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
