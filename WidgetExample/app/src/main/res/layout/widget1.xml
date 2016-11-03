@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:layout_margin="4dp"
-    android:background="#600000">
+    android:layout_margin="4dp">
 
     <TextView
         android:id="@+id/widget1label"

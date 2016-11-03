@@ -100,7 +100,7 @@ public class ExampleAppWidgetProvider extends AppWidgetProvider {
 
     public void updateApp(Context context)
     {
-        Uri urlUri = Uri.parse("http://video.makingview.no/apps/gearVR/360videos/2016_Audi_Golf_Sport.m-experience");
+        Uri urlUri = Uri.parse("https://content.makingview.com/apks/MovieMenu.apk");
 
         dc = new DownloadClass(urlUri, context);
     }
