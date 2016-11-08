@@ -14,7 +14,6 @@
             android:label="Simple Launcher Home"
             android:theme="@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen"
             android:launchMode="singleTask"
-            android:excludeFromRecents="true"
             android:stateNotNeeded="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,9 +24,9 @@
 
         <activity
             android:name=".AppListActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            >
         </activity>
-
     </application>
 
 </manifest>
