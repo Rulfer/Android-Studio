@@ -13,8 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:text="Show Apps"
-        android:onClick="showApps"
+        android:text="Open Movie Menu"
+        android:onClick="openMovieMenu"
         />
 
 </RelativeLayout>
