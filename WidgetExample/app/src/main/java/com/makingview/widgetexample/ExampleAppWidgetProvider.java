@@ -42,8 +42,6 @@ public class ExampleAppWidgetProvider extends AppWidgetProvider
 
     boolean firstTime = true;
 
-    Context masterContext;
-
     private DownloadManager downloadManager;
     Long queueID = null;
     final ArrayList<Long> ids = new ArrayList<Long>();
@@ -53,7 +51,6 @@ public class ExampleAppWidgetProvider extends AppWidgetProvider
         final int N = appWidgetIds.length;
 
         ComponentName thisWidget = new ComponentName(context, ExampleAppWidgetProvider.class);
-        masterContext = context;
 
         // Perform this loop procedure for each App Widget that belongs to this
         // provider
@@ -68,12 +65,6 @@ public class ExampleAppWidgetProvider extends AppWidgetProvider
 
             IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
             context.getApplicationContext().registerReceiver(downloadReceiver, filter);
-            //if(downloading)
-            //    views.setLong(1, "waddup", dc.returnQueueId());
-
-
-            // To update a label
-            //views.setTextViewText(R.id.widget1label, df.format(new Date()));
 
             // Tell the AppWidgetManager to perform an update on the current app
             // widget

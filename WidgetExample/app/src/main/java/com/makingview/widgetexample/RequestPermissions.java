@@ -22,14 +22,11 @@ public class RequestPermissions extends Activity
 
     //final M
 
-    /*public RequestPermissions(Activity activity)
-    {
-        verifyStoragePermissions(activity);
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     public RequestPermissions()
@@ -37,10 +34,6 @@ public class RequestPermissions extends Activity
         verifyStoragePermissions(RequestPermissions.this);
     }
 
-    public void checkStoragePermissions()
-    {
-        verifyStoragePermissions(RequestPermissions.this);
-    }
 
     public static void verifyStoragePermissions(Activity activity)
     {
