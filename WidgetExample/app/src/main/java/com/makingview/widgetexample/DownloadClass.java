@@ -1,28 +1,37 @@
 package com.makingview.widgetexample;
 
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.File;
 
 public class DownloadClass
 {
-    private DownloadManager downloadManager;
-    Long queueID;
+    DownloadManager downloadManager;
+    Long queueID = null;
+    Context masterContext;
 
-    public DownloadClass(Uri uri, Context context)
+    public Long returnQueueId()
     {
+        return queueID;
+    }
+
+    public DownloadClass(Uri uri, Context context, IntentFilter filter)
+    {
+        //context.registerReceiver(downloadReceiver, filter);
+        masterContext = context;
         queueID = DownloadData(uri, context);
     }
 
@@ -57,39 +66,46 @@ public class DownloadClass
         return downloadReference;
     }
 
-    private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
+    //private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
+    /*@Override
+    public void onReceive(Context context, Intent intent)
+    {
+        super.onReceive(context, intent);//add this line
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            DownloadManager.Query DownloadQuery = new DownloadManager.Query();
-            DownloadQuery.setFilterById(queueID);
+        DownloadManager.Query DownloadQuery = new DownloadManager.Query();
+        DownloadQuery.setFilterById(queueID);
 
-            Cursor cursor = downloadManager.query(DownloadQuery);
-            if(cursor.moveToFirst())
-            {
-                DownloadManager.Query query = new DownloadManager.Query();
-                query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
-                cursor.moveToFirst();
-                int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                //This is String I pass to openFile method
-                String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                installDownloadedAPK(savedFilePath, context);
-                Toast toast = Toast.makeText(context,
-                        "Download completed", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 25, 400);
-                toast.show();
-            }
-            else
-            {
-                Toast toast = Toast.makeText(context,
-                        "Download Cancelled", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 25, 400);
-                toast.show();
-            }
+        Toast asdf = Toast.makeText(context,
+                "Download something", Toast.LENGTH_LONG);
+        asdf.setGravity(Gravity.TOP, 25, 400);
+        asdf.show();
+
+        Cursor cursor = downloadManager.query(DownloadQuery);
+        if(cursor.moveToFirst())
+        {
+            DownloadManager.Query query = new DownloadManager.Query();
+            query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
+            cursor.moveToFirst();
+            int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+            //This is String I pass to openFile method
+            String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+            installDownloadedAPK(savedFilePath);
+            Toast toast = Toast.makeText(context,
+                    "Download completed", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP, 25, 400);
+            toast.show();
         }
-    };
+        else
+        {
+            Toast toast = Toast.makeText(context,
+                    "Download Cancelled", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP, 25, 400);
+            toast.show();
+        }
+    };*/
+    //};
 
-    public void installDownloadedAPK(String fileName, Context context)
+    public void installDownloadedAPK(String fileName)
     {
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String ext = MimeTypeMap.getFileExtensionFromUrl((fileName));
@@ -97,6 +113,6 @@ public class DownloadClass
 
         Intent install = new Intent(Intent.ACTION_VIEW);
         install.setDataAndType(Uri.fromFile(new File(fileName)), type);
-        context.startActivity(install);
+        masterContext.startActivity(install);
     }
 }
