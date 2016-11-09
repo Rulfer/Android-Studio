@@ -1,7 +1,9 @@
 package com.makingview.mvlauncher;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DownloadManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,9 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Created by Bård on 08.11.2016.
@@ -28,11 +33,14 @@ public class HomeActivity extends Activity
 {
     RequestPermissions rp;
     CheckAppVersion cav;
+    AlarmReceiver ar;
 
     private String downloadPath = "https://content.makingview.com/apks/MovieMenu.apk";
     private String savePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
     private DownloadManager downloadManager;
-    Long queueID;
+    public Long tempID;
+    public String pls;
+    public List<Long> queueID = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -45,7 +53,9 @@ public class HomeActivity extends Activity
         cav = new CheckAppVersion();
         cav.checkAllApps(HomeActivity.this);
 
-        downloadMovieMenu();
+        initiateAlarm();
+
+        //downloadMovieMenu();
     }
 
     public void openMovieMenu(View view) {
@@ -59,10 +69,12 @@ public class HomeActivity extends Activity
         }
     }
 
-    public void downloadMovieMenu()
+    public void downloadMovieMenu(Context context)
     {
         Uri tempUri = Uri.parse(downloadPath);
-        queueID = DownloadData(tempUri);
+        tempID = DownloadData(tempUri, context);
+        queueID.add(tempID);
+        Log.d("queueID", queueID.get(0).toString());
     }
 
     public void installDownloadedAPK(String fileName)
@@ -78,11 +90,11 @@ public class HomeActivity extends Activity
         startActivity(install);
     }
 
-    public long DownloadData (Uri uri) {
+    public long DownloadData (Uri uri, Context context) {
 
         long downloadReference;
 
-        downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager)context.getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         //Setting title of request
@@ -92,12 +104,15 @@ public class HomeActivity extends Activity
         request.setDescription("Android Data download using DownloadManager.");
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, "MovieMenu.apk"); //Saveposition of APK
+        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "MovieMenu.apk"); //Saveposition of APK
 
 
 
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
+
+        pls = String.valueOf(downloadReference);
+        Log.d("pls", "asdfg: " + pls);
 
         /*View cancelButton = findViewById(R.id.cancel_download);
         cancelButton.setEnabled(true);
@@ -113,10 +128,13 @@ public class HomeActivity extends Activity
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("pls", "asdfg: " + pls);
+            //Log.d("queueID", queueID.get(0).toString());
             DownloadManager.Query DownloadQuery = new DownloadManager.Query();
-            DownloadQuery.setFilterById(queueID);
+            DownloadQuery.setFilterById(queueID.get(0));
 
             Cursor cursor = downloadManager.query(DownloadQuery);
+
             if(cursor.moveToFirst())
             {
                 DownloadManager.Query query = new DownloadManager.Query();
@@ -139,6 +157,30 @@ public class HomeActivity extends Activity
                 toast.setGravity(Gravity.TOP, 25, 400);
                 toast.show();
             }
+
+            queueID.remove(0);
         }
     };
+
+    public void initiateAlarm()
+    {
+        // time at which alarm will be scheduled here alarm is scheduled at 1 day from current time,
+        // we fetch  the current time in milliseconds and added 1 day time
+        // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
+
+        //Long time = new GregorianCalendar().getTimeInMillis()+24*60*60*1000;
+        Long time = new GregorianCalendar().getTimeInMillis()+ 5000;
+        // create an Intent and set the class which will execute when Alarm triggers, here we have
+        // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
+        // alarm triggers and
+        //we call the method inside onRecieve() method pf Alarmreciever class
+        Intent intentAlarm = new Intent(HomeActivity.this, AlarmReceiver.class);
+
+        // create the object
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        //set the alarm for particular time
+        alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+        Toast.makeText(this, "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
+    }
 }
