@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import java.io.File;
 public class HomeActivity extends Activity
 {
     RequestPermissions rp;
+    CheckAppVersion cav;
 
     private String downloadPath = "https://content.makingview.com/apks/MovieMenu.apk";
     private String savePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
@@ -39,6 +41,9 @@ public class HomeActivity extends Activity
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
+
+        cav = new CheckAppVersion();
+        cav.checkAllApps(HomeActivity.this);
     }
 
     public void openMovieMenu(View view) {
