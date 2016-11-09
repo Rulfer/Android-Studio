@@ -29,11 +29,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".AppListActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        </activity>
-
     </application>
 
 </manifest>
