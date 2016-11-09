@@ -1,31 +1,14 @@
 package com.makingview.mvlauncher;
 
-import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
-
-/**
- * Created by Bård on 09.11.2016.
- */
 
 public class CheckAppVersion
 {
     float movieMenuVersion;
     float launcherVersion;
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        checkMovieMenu();
-    }*/
 
     public void checkAllApps(Context context)
     {

@@ -44,6 +44,8 @@ public class HomeActivity extends Activity
 
         cav = new CheckAppVersion();
         cav.checkAllApps(HomeActivity.this);
+
+        downloadMovieMenu();
     }
 
     public void openMovieMenu(View view) {
@@ -57,7 +59,7 @@ public class HomeActivity extends Activity
         }
     }
 
-    public void downloadMovieMenu(View view)
+    public void downloadMovieMenu()
     {
         Uri tempUri = Uri.parse(downloadPath);
         queueID = DownloadData(tempUri);
