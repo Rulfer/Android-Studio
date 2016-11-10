@@ -1,20 +1,15 @@
 package com.makingview.mvlauncher;
 
-import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.makingview.mvlauncher.R;
 
 import java.util.GregorianCalendar;
 
@@ -41,9 +36,21 @@ public class AlarmReceiver extends BroadcastReceiver
 
         Toast.makeText(context, "beep beep!", Toast.LENGTH_LONG).show();
 
+        //ha = new HomeActivity();
+        //ha.downloadMovieMenu(context);
 
-        ha = new HomeActivity();
-        ha.downloadMovieMenu(context);
+
+        //initiateAlarm(context);
+        sendMessage(context);
+    }
+
+    private void sendMessage(Context context)
+    {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent("custom-event-name");
+        intent.putExtra("message", "initiate download");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
         initiateAlarm(context);
     }
 

@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -50,6 +51,9 @@ public class HomeActivity extends Activity
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(localMessageReciever,
+                new IntentFilter("custom-event-name"));
+
         cav = new CheckAppVersion();
         cav.checkAllApps(HomeActivity.this);
 
@@ -69,32 +73,29 @@ public class HomeActivity extends Activity
         }
     }
 
-    public void downloadMovieMenu(Context context)
+    public void downloadMovieMenu()
     {
         Uri tempUri = Uri.parse(downloadPath);
-        tempID = DownloadData(tempUri, context);
+        tempID = DownloadData(tempUri);
         queueID.add(tempID);
-        Log.d("queueID", queueID.get(0).toString());
     }
 
     public void installDownloadedAPK(String fileName)
     {
-        Log.d("fileName" , fileName);
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String ext = MimeTypeMap.getFileExtensionFromUrl((fileName));
         String type = map.getMimeTypeFromExtension(ext);
 
         Intent install = new Intent(Intent.ACTION_VIEW);
-        Log.d("fack off", "openFile Trying to open file: " + Uri.fromFile(new File(fileName)));
         install.setDataAndType(Uri.fromFile(new File(fileName)), type);
         startActivity(install);
     }
 
-    public long DownloadData (Uri uri, Context context) {
+    public long DownloadData (Uri uri) {
 
         long downloadReference;
 
-        downloadManager = (DownloadManager)context.getSystemService(DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         //Setting title of request
@@ -104,9 +105,7 @@ public class HomeActivity extends Activity
         request.setDescription("Android Data download using DownloadManager.");
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "MovieMenu.apk"); //Saveposition of APK
-
-
+        request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, "MovieMenu.apk"); //Saveposition of APK
 
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
@@ -114,15 +113,21 @@ public class HomeActivity extends Activity
         pls = String.valueOf(downloadReference);
         Log.d("pls", "asdfg: " + pls);
 
-        /*View cancelButton = findViewById(R.id.cancel_download);
-        cancelButton.setEnabled(true);
-        cancelButton.setVisibility(View.VISIBLE);
-
-        Button LayoutButton = (Button) findViewById(R.id.lay_below_me);
-        LayoutButton.setVisibility(View.INVISIBLE);*/
-
         return downloadReference;
     }
+
+    private BroadcastReceiver localMessageReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+            Log.d("reciever", "Got message: " + message);
+
+            if(message == "initiate download")
+            {
+                downloadMovieMenu();
+            }
+        }
+    };
 
     private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 
