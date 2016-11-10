@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,6 +23,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -32,11 +34,10 @@ import java.util.List;
 
 public class HomeActivity extends Activity
 {
-    RequestPermissions rp;
     CheckAppVersion cav;
     AlarmReceiver ar;
 
-    private String downloadPath = "https://content.makingview.com/apks/MovieMenu.apk";
+    private String downloadPath = "http://content.makingview.com/LauncherFiles/MovieMenu.apk";
     private String savePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
     private DownloadManager downloadManager;
     public Long tempID;
@@ -58,14 +59,12 @@ public class HomeActivity extends Activity
         cav.checkAllApps(HomeActivity.this);
 
         initiateAlarm();
-
-        //downloadMovieMenu();
     }
 
     public void openMovieMenu(View view) {
         PackageManager manager = getPackageManager();
 
-        Intent i = manager.getLaunchIntentForPackage("com.MakingView.movieMenuNew");
+        Intent i = manager.getLaunchIntentForPackage("com.MakingView.movieMenu");
 
         if (i != null) {
             i.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -91,18 +90,21 @@ public class HomeActivity extends Activity
         startActivity(install);
     }
 
+    //Function that initiates the Android Download Manager class.
+    //This class allows us to download files and display the download queue, without having to
+    //create the functionality ourself.
     public long DownloadData (Uri uri) {
 
-        long downloadReference;
+        long downloadReference; //Reference to the object to be downloaded
 
-        downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
+        downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE); //A reference to the download class
+        DownloadManager.Request request = new DownloadManager.Request(uri); //The file to download
 
         //Setting title of request
-        request.setTitle("Downloading " + "MovieMenu.apk");
+        request.setTitle("Downloading " + "MovieMenu.apk"); //Title of the download to be displayed on the phone
 
         //Setting description of request
-        request.setDescription("Android Data download using DownloadManager.");
+        request.setDescription("Movie Menu update"); //Description of the download
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
         request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, "MovieMenu.apk"); //Saveposition of APK
@@ -110,17 +112,16 @@ public class HomeActivity extends Activity
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
 
-        pls = String.valueOf(downloadReference);
-        Log.d("pls", "asdfg: " + pls);
-
-        return downloadReference;
+        return downloadReference; //Return the download refence, so that the code easily can access the downloaded file
     }
 
+    //This reciever is used by AlarmReciever.java to tell this class that it should download the XML document
+    //and check for updated files.
     private BroadcastReceiver localMessageReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String message = intent.getStringExtra("message");
-            Log.d("reciever", "Got message: " + message);
 
             if(message == "initiate download")
             {
@@ -135,35 +136,45 @@ public class HomeActivity extends Activity
         public void onReceive(Context context, Intent intent) {
             Log.d("pls", "asdfg: " + pls);
             //Log.d("queueID", queueID.get(0).toString());
-            DownloadManager.Query DownloadQuery = new DownloadManager.Query();
-            DownloadQuery.setFilterById(queueID.get(0));
+            try {
+                DownloadManager.Query DownloadQuery = new DownloadManager.Query();
+                DownloadQuery.setFilterById(queueID.get(0));
 
-            Cursor cursor = downloadManager.query(DownloadQuery);
+                Cursor cursor = downloadManager.query(DownloadQuery);
 
-            if(cursor.moveToFirst())
-            {
-                DownloadManager.Query query = new DownloadManager.Query();
-                query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
-                cursor.moveToFirst();
-                int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                //This is String I pass to openFile method
-                String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                installDownloadedAPK(savedFilePath);
+                if (cursor.moveToFirst()) {
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
+                    cursor.moveToFirst();
+                    int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                    //This is String I pass to openFile method
+                    String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
 
-                Toast toast = Toast.makeText(HomeActivity.this,
-                        "Download Completed", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 25, 400);
-                toast.show();
+                    installDownloadedAPK(savedFilePath);
+
+                    Toast toast = Toast.makeText(HomeActivity.this,
+                            "Download Completed", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP, 25, 400);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(HomeActivity.this,
+                            "Download Cancelled", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP, 25, 400);
+                    toast.show();
+                }
             }
-            else
+            catch (Exception e)
             {
-                Toast toast = Toast.makeText(HomeActivity.this,
-                        "Download Cancelled", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 25, 400);
-                toast.show();
+                Log.d("Download failed", e.toString());
             }
 
+            try{
             queueID.remove(0);
+            }
+            catch (Exception e)
+            {
+                Log.d("queueID is empty", e.toString());
+            }
         }
     };
 

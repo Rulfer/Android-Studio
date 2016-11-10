@@ -20,7 +20,7 @@ public class CheckAppVersion
     private float checkMovieMenu(Context context)
     {
         float temp;
-        String pName = "com.MakingView.movieMenuNew";
+        String pName = "com.MakingView.movieMenu";
         PackageManager pm = context.getPackageManager();
         try
         {
