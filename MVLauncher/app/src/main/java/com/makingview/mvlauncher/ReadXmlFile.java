@@ -1,8 +1,7 @@
 package com.makingview.mvlauncher;
 
+import android.content.Context;
 import android.util.Log;
-
-import com.makingview.mvlauncher.HomeActivity;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -14,26 +13,16 @@ import java.util.List;
 
 public class ReadXmlFile
 {
-    HomeActivity sa;
-    float launcherVersion = 0;
-    float movieMenuVersion = 0;
+    CheckAppVersion cav;
+    List<Float> versions = new ArrayList<>();
 
-    private String urlString = null;
+    String urlString = "http://content.makingview.com/LauncherFiles/apkinfo.xml";
     private XmlPullParserFactory xmlFactoryObject;
+
     public volatile boolean parsingComplete = true;
     public volatile boolean downloadFailed = false;
 
-    public ReadXmlFile(String url){
-        this.urlString = url;
-    }
-
-    public float getLauncherVersion() {
-        return launcherVersion;
-    }
-
-    public float getMovieMenuVersion(){
-        return movieMenuVersion;
-    }
+    Context thisContext;
 
     public void parseXMLAndStoreIt(XmlPullParser myParser) {
         int event;
@@ -53,11 +42,10 @@ public class ReadXmlFile
                         break;
 
                     case XmlPullParser.END_TAG:
-                        if(name.equals("movieMenuVersion"))
-                            movieMenuVersion = Float.valueOf(text);
-                        if(name.equals("launcherVersion"))
+                        Log.d("xml text", text);
+                        if(name.equals("version"))
                         {
-                            launcherVersion = Float.valueOf(text);
+                            versions.add(Float.parseFloat(text));
                         }
                         break;
                 }

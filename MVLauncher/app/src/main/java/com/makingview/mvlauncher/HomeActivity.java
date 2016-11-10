@@ -35,13 +35,11 @@ import java.util.List;
 public class HomeActivity extends Activity
 {
     CheckAppVersion cav;
-    AlarmReceiver ar;
 
     private String downloadPath = "http://content.makingview.com/LauncherFiles/MovieMenu.apk";
-    private String savePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
+
     private DownloadManager downloadManager;
-    public Long tempID;
-    public String pls;
+
     public List<Long> queueID = new ArrayList<>();
 
     @Override
@@ -55,8 +53,8 @@ public class HomeActivity extends Activity
         LocalBroadcastManager.getInstance(this).registerReceiver(localMessageReciever,
                 new IntentFilter("custom-event-name"));
 
-        cav = new CheckAppVersion();
-        cav.checkAllApps(HomeActivity.this);
+        //cav = new CheckAppVersion();
+        //cav.checkAllApps(HomeActivity.this, 0, 0);
 
         initiateAlarm();
     }
@@ -75,7 +73,7 @@ public class HomeActivity extends Activity
     public void downloadMovieMenu()
     {
         Uri tempUri = Uri.parse(downloadPath);
-        tempID = DownloadData(tempUri);
+        Long tempID = DownloadData(tempUri);
         queueID.add(tempID);
     }
 
@@ -134,19 +132,18 @@ public class HomeActivity extends Activity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("pls", "asdfg: " + pls);
-            //Log.d("queueID", queueID.get(0).toString());
             try {
                 DownloadManager.Query DownloadQuery = new DownloadManager.Query();
                 DownloadQuery.setFilterById(queueID.get(0));
 
                 Cursor cursor = downloadManager.query(DownloadQuery);
 
-                if (cursor.moveToFirst()) {
+                if (cursor.moveToFirst())
+                {
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
                     cursor.moveToFirst();
-                    int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+
                     //This is String I pass to openFile method
                     String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
 

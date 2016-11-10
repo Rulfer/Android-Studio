@@ -7,14 +7,25 @@ import android.util.Log;
 
 public class CheckAppVersion
 {
+    ReadXmlFile rxf;
     float movieMenuVersion;
     float launcherVersion;
 
-    public void checkAllApps(Context context)
+    float xmlMovieMenuVersion;
+    float xmlLauncherVersion;
+
+    public void checkAllApps(Context context, float movieValue, float launcherValue)
     {
+        xmlMovieMenuVersion = movieValue;
+        xmlLauncherVersion = launcherValue;
+        Log.d("XML MovieMenu.apk", "version is: " + xmlMovieMenuVersion);
+        Log.d("XML Launcher.apk", "version is: " + xmlLauncherVersion);
 
         movieMenuVersion = checkMovieMenu(context);
         launcherVersion = checkLauncher(context);
+        //Log.d("Currently installed MovieMenu.apk", "version is: " + movieMenuVersion);
+        Log.d("Installed MovieMenu.apk", "version is: " + movieMenuVersion);
+        Log.d("Installed Launcer.apk", "version is: " + launcherVersion);
     }
 
     private float checkMovieMenu(Context context)
@@ -25,12 +36,10 @@ public class CheckAppVersion
         try
         {
             PackageInfo info = pm.getPackageInfo(pName, 0);
-            Log.d("Checkig movie menu", "Info: " + info.versionCode);
             temp = info.versionCode;
         }
         catch (PackageManager.NameNotFoundException e)
         {
-            Log.d("Checkig movie menu", "failed");
             temp = 0;
         }
 
@@ -45,12 +54,10 @@ public class CheckAppVersion
         try
         {
             PackageInfo info = pm.getPackageInfo(context.getPackageName(), 0);
-            Log.d("Checkig launcher", "Info: " + info.versionName);
             temp = info.versionCode;
         }
         catch (PackageManager.NameNotFoundException e)
         {
-            Log.d("Checkig launcher", "failed");
             temp = 0;
         }
 

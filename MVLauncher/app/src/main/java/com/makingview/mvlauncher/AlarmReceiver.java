@@ -19,6 +19,8 @@ import java.util.GregorianCalendar;
 
 public class AlarmReceiver extends BroadcastReceiver
 {
+    ReadXmlFile rxf;
+    private String xmlPath = "http://content.makingview.com/LauncherFiles/apkinfo.xml";
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -40,7 +42,12 @@ public class AlarmReceiver extends BroadcastReceiver
 
 
         //initiateAlarm(context);
-        sendMessage(context);
+        //sendMessage(context);
+
+        rxf = new ReadXmlFile();
+        rxf.fetchXML();
+
+        initiateAlarm(context);
     }
 
     private void sendMessage(Context context)
