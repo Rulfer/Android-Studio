@@ -14,13 +14,16 @@ import java.util.List;
 public class ReadXmlFile
 {
     CheckAppVersion cav;
-    List<Float> versions = new ArrayList<>();
 
-    String urlString = "http://content.makingview.com/LauncherFiles/apkinfo.xml";
+    String urlString = "http://video.makingview.no/apps/gearVR/apkinfo.xml";
+
     private XmlPullParserFactory xmlFactoryObject;
 
     public volatile boolean parsingComplete = true;
     public volatile boolean downloadFailed = false;
+
+    private float movieMenuVersion = 0;
+    private float launcherVersion = 0;
 
     Context thisContext;
 
@@ -42,10 +45,14 @@ public class ReadXmlFile
                         break;
 
                     case XmlPullParser.END_TAG:
-                        Log.d("xml text", text);
-                        if(name.equals("version"))
+                        if(name.equals("movieMenuVersion"))
                         {
-                            versions.add(Float.parseFloat(text));
+                            Log.d("found moviemenuversion", text);
+                            movieMenuVersion = Float.parseFloat(text);
+                        }
+                        if(name.equals("launcherVersion"))
+                        {
+                            launcherVersion = Float.parseFloat(text);
                         }
                         break;
                 }

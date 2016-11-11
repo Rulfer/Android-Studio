@@ -37,13 +37,6 @@ public class AlarmReceiver extends BroadcastReceiver
 
         Toast.makeText(context, "beep beep!", Toast.LENGTH_LONG).show();
 
-        //ha = new HomeActivity();
-        //ha.downloadMovieMenu(context);
-
-
-        //initiateAlarm(context);
-        //sendMessage(context);
-
         rxf = new ReadXmlFile();
         rxf.fetchXML();
 
