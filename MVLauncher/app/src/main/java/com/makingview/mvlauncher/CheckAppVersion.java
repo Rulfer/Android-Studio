@@ -14,7 +14,7 @@ public class CheckAppVersion
     float xmlMovieMenuVersion;
     float xmlLauncherVersion;
 
-    public void checkAllApps(Context context, float movieValue, float launcherValue)
+    public void checkAllApps(Context context,float movieValue, float launcherValue)
     {
         xmlMovieMenuVersion = movieValue;
         xmlLauncherVersion = launcherValue;

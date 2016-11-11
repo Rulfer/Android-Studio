@@ -1,10 +1,14 @@
 package com.makingview.mvlauncher;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,45 +29,13 @@ public class ReadXmlFile
     private float movieMenuVersion = 0;
     private float launcherVersion = 0;
 
-    Context thisContext;
-
-    public void parseXMLAndStoreIt(XmlPullParser myParser) {
-        int event;
-        String text=null;
-        try {
-            event = myParser.getEventType();
-
-            while (event != XmlPullParser.END_DOCUMENT && downloadFailed == false) {
-                String name=myParser.getName();
-
-                switch (event){
-                    case XmlPullParser.START_TAG:
-                        break;
-
-                    case XmlPullParser.TEXT:
-                        text = myParser.getText();
-                        break;
-
-                    case XmlPullParser.END_TAG:
-                        if(name.equals("movieMenuVersion"))
-                        {
-                            Log.d("found moviemenuversion", text);
-                            movieMenuVersion = Float.parseFloat(text);
-                        }
-                        if(name.equals("launcherVersion"))
-                        {
-                            launcherVersion = Float.parseFloat(text);
-                        }
-                        break;
-                }
-                event = myParser.next();
-            }
-            parsingComplete = false;
-        }
-
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+    public float returnMovieMenuVersion()
+    {
+        return movieMenuVersion;
+    }
+    public float returnLauncherVersion()
+    {
+        return launcherVersion;
     }
 
     public void fetchXML(){
@@ -97,5 +69,45 @@ public class ReadXmlFile
             }
         });
         thread.start();
+    }
+
+    public void parseXMLAndStoreIt(XmlPullParser myParser) {
+        int event;
+        String text=null;
+        try {
+            event = myParser.getEventType();
+
+            while (event != XmlPullParser.END_DOCUMENT && downloadFailed == false) {
+                String name=myParser.getName();
+
+                switch (event){
+                    case XmlPullParser.START_TAG:
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        text = myParser.getText();
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        if(name.equals("movieMenuVersion"))
+                        {
+                            Log.d("found moviemenuversion", text);
+                            movieMenuVersion = Float.parseFloat(text);
+                        }
+                        if(name.equals("launcherVersion"))
+                        {
+                            Log.d("found launcherversion", text);
+                            launcherVersion = Float.parseFloat(text);
+                        }
+                        break;
+                }
+                event = myParser.next();
+            }
+            parsingComplete = false;
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

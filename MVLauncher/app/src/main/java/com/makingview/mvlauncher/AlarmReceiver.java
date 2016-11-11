@@ -6,11 +6,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.GregorianCalendar;
 
 /**
@@ -20,7 +22,11 @@ import java.util.GregorianCalendar;
 public class AlarmReceiver extends BroadcastReceiver
 {
     ReadXmlFile rxf;
+    CheckAppVersion cav;
     private String xmlPath = "http://content.makingview.com/LauncherFiles/apkinfo.xml";
+
+    private float xmlMovieMenuVersion = 0;
+    private float xmlLauncherVersion = 0;
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -35,10 +41,19 @@ public class AlarmReceiver extends BroadcastReceiver
 
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
-        Toast.makeText(context, "beep beep!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "beep beep!", Toast.LENGTH_SHORT).show();
 
         rxf = new ReadXmlFile();
         rxf.fetchXML();
+
+        while(rxf.parsingComplete && rxf.downloadFailed == false)
+        {
+            xmlMovieMenuVersion = rxf.returnMovieMenuVersion();
+            xmlLauncherVersion = rxf.returnLauncherVersion();
+        }
+
+        cav = new CheckAppVersion();
+        cav.checkAllApps(context, xmlMovieMenuVersion, xmlLauncherVersion);
 
         initiateAlarm(context);
     }
@@ -60,7 +75,7 @@ public class AlarmReceiver extends BroadcastReceiver
         // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
 
         //Long time = new GregorianCalendar().getTimeInMillis()+24*60*60*1000;
-        Long time = new GregorianCalendar().getTimeInMillis()+ 10000;
+        Long time = new GregorianCalendar().getTimeInMillis()+ 1000;
         // create an Intent and set the class which will execute when Alarm triggers, here we have
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
@@ -72,6 +87,6 @@ public class AlarmReceiver extends BroadcastReceiver
 
         //set the alarm for particular time
         alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(context,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-        Toast.makeText(context, "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Alarm Scheduled by AlarmReciever", Toast.LENGTH_SHORT).show();
     }
 }

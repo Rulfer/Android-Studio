@@ -53,9 +53,6 @@ public class HomeActivity extends Activity
         LocalBroadcastManager.getInstance(this).registerReceiver(localMessageReciever,
                 new IntentFilter("custom-event-name"));
 
-        //cav = new CheckAppVersion();
-        //cav.checkAllApps(HomeActivity.this, 0, 0);
-
         initiateAlarm();
     }
 
@@ -194,6 +191,6 @@ public class HomeActivity extends Activity
 
         //set the alarm for particular time
         alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-        Toast.makeText(this, "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Alarm Scheduled by HomeActivity", Toast.LENGTH_LONG).show();
     }
 }
