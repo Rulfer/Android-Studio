@@ -8,29 +8,65 @@ import android.util.Log;
 public class CheckAppVersion
 {
     ReadXmlFile rxf;
-    float movieMenuVersion;
-    float launcherVersion;
+    int movieMenuVersion;
+    int launcherVersion;
 
-    float xmlMovieMenuVersion;
-    float xmlLauncherVersion;
+    int xmlMovieMenuVersion;
+    int xmlLauncherVersion;
 
-    public void checkAllApps(Context context,float movieValue, float launcherValue)
+    public volatile boolean doneCheking = false;
+
+    private boolean updateMovieMenu = false;
+    private boolean updateLauncher = false;
+
+    public boolean returnMovieMenu()
+    {
+        return  updateMovieMenu;
+    }
+
+    public boolean returnLauncher()
+    {
+        return  updateLauncher;
+    }
+
+    public void reset()
+    {
+        doneCheking = false;
+
+        updateMovieMenu = false;
+        updateLauncher = false;
+    }
+
+    public void checkAllApps(Context context,int movieValue, int launcherValue)
     {
         xmlMovieMenuVersion = movieValue;
         xmlLauncherVersion = launcherValue;
-        Log.d("XML MovieMenu.apk", "version is: " + xmlMovieMenuVersion);
-        Log.d("XML Launcher.apk", "version is: " + xmlLauncherVersion);
 
         movieMenuVersion = checkMovieMenu(context);
         launcherVersion = checkLauncher(context);
-        //Log.d("Currently installed MovieMenu.apk", "version is: " + movieMenuVersion);
-        Log.d("Installed MovieMenu.apk", "version is: " + movieMenuVersion);
-        Log.d("Installed Launcer.apk", "version is: " + launcherVersion);
+
+        if(movieMenuVersion < xmlMovieMenuVersion)
+            updateMovieMenu = true;
+        else
+            updateMovieMenu = false;
+
+        if(launcherVersion < xmlLauncherVersion)
+            updateLauncher = true;
+        else
+            updateLauncher = false;
+
+        Log.d("installed Menu", "" + movieMenuVersion);
+        Log.d("installed Launcher", "" + launcherVersion);
+
+        Log.d("update menu", "" + updateMovieMenu);
+        Log.d("update launcher", "" + updateLauncher);
+
+        doneCheking = true;
     }
 
-    private float checkMovieMenu(Context context)
+    private int checkMovieMenu(Context context)
     {
-        float temp;
+        int temp;
         String pName = "com.MakingView.movieMenu";
         PackageManager pm = context.getPackageManager();
         try
@@ -46,9 +82,9 @@ public class CheckAppVersion
         return temp;
     }
 
-    private float checkLauncher(Context context)
+    private int checkLauncher(Context context)
     {
-        float temp;
+        int temp;
         PackageManager pm = context.getPackageManager();
 
         try

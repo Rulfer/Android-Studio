@@ -26,16 +26,22 @@ public class ReadXmlFile
     public volatile boolean parsingComplete = true;
     public volatile boolean downloadFailed = false;
 
-    private float movieMenuVersion = 0;
-    private float launcherVersion = 0;
+    private int movieMenuVersion = 0;
+    private int launcherVersion = 0;
 
-    public float returnMovieMenuVersion()
+    public int returnMovieMenuVersion()
     {
         return movieMenuVersion;
     }
-    public float returnLauncherVersion()
+    public int returnLauncherVersion()
     {
         return launcherVersion;
+    }
+
+    public void reset()
+    {
+        parsingComplete = true;
+        downloadFailed = false;
     }
 
     public void fetchXML(){
@@ -92,12 +98,12 @@ public class ReadXmlFile
                         if(name.equals("movieMenuVersion"))
                         {
                             Log.d("found moviemenuversion", text);
-                            movieMenuVersion = Float.parseFloat(text);
+                            movieMenuVersion = Integer.parseInt(text);
                         }
                         if(name.equals("launcherVersion"))
                         {
                             Log.d("found launcherversion", text);
-                            launcherVersion = Float.parseFloat(text);
+                            launcherVersion = Integer.parseInt(text);
                         }
                         break;
                 }

@@ -23,10 +23,12 @@ public class AlarmReceiver extends BroadcastReceiver
 {
     ReadXmlFile rxf;
     CheckAppVersion cav;
-    private String xmlPath = "http://content.makingview.com/LauncherFiles/apkinfo.xml";
 
-    private float xmlMovieMenuVersion = 0;
-    private float xmlLauncherVersion = 0;
+    private int xmlMovieMenuVersion = 0;
+    private int xmlLauncherVersion = 0;
+
+    private boolean updateMovieMenu = false;
+    private boolean updateLauncher = false;
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -55,17 +57,31 @@ public class AlarmReceiver extends BroadcastReceiver
         cav = new CheckAppVersion();
         cav.checkAllApps(context, xmlMovieMenuVersion, xmlLauncherVersion);
 
+
+        updateMovieMenu = cav.returnMovieMenu();
+        updateLauncher = cav.returnLauncher();
+
+        Log.d("pls update domsehint", "now");
+        if(updateMovieMenu == true)
+            sendMessage(context, "update movieMenu");
+        if(updateLauncher == true)
+        {
+            Log.d("update", "launcher");
+            sendMessage(context, "update launcher");
+        }
+
+        rxf.reset();
+        cav.reset();
+
         initiateAlarm(context);
     }
 
-    private void sendMessage(Context context)
+    private void sendMessage(Context context, String message)
     {
-        Log.d("sender", "Broadcasting message");
+        Log.d("Update an app", message);
         Intent intent = new Intent("custom-event-name");
-        intent.putExtra("message", "initiate download");
+        intent.putExtra("message", message);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
-        initiateAlarm(context);
     }
 
     void initiateAlarm(Context context)
@@ -75,7 +91,7 @@ public class AlarmReceiver extends BroadcastReceiver
         // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
 
         //Long time = new GregorianCalendar().getTimeInMillis()+24*60*60*1000;
-        Long time = new GregorianCalendar().getTimeInMillis()+ 1000;
+        Long time = new GregorianCalendar().getTimeInMillis()+ 10000;
         // create an Intent and set the class which will execute when Alarm triggers, here we have
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and

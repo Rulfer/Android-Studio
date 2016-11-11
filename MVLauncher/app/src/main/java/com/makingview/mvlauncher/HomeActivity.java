@@ -36,7 +36,8 @@ public class HomeActivity extends Activity
 {
     CheckAppVersion cav;
 
-    private String downloadPath = "http://content.makingview.com/LauncherFiles/MovieMenu.apk";
+    private String downloadPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
+    private String launcherApkPath = "http://video.makingview.no/apps/gearVR/apks/app-release.apk";
 
     private DownloadManager downloadManager;
 
@@ -70,6 +71,13 @@ public class HomeActivity extends Activity
     public void downloadMovieMenu()
     {
         Uri tempUri = Uri.parse(downloadPath);
+        Long tempID = DownloadData(tempUri);
+        queueID.add(tempID);
+    }
+
+    public void downloadLauncher()
+    {
+        Uri tempUri = Uri.parse(launcherApkPath);
         Long tempID = DownloadData(tempUri);
         queueID.add(tempID);
     }
@@ -118,9 +126,13 @@ public class HomeActivity extends Activity
 
             String message = intent.getStringExtra("message");
 
-            if(message == "initiate download")
+            if(message == "update movieMenu")
             {
                 downloadMovieMenu();
+            }
+            if(message == "update launcher")
+            {
+                downloadLauncher();
             }
         }
     };
