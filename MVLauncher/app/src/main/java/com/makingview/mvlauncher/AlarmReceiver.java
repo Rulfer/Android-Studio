@@ -63,7 +63,10 @@ public class AlarmReceiver extends BroadcastReceiver
 
         Log.d("pls update domsehint", "now");
         if(updateMovieMenu == true)
+        {
+            Log.d("update", "MovieMenu");
             sendMessage(context, "update movieMenu");
+        }
         if(updateLauncher == true)
         {
             Log.d("update", "launcher");

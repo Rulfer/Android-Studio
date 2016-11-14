@@ -18,11 +18,11 @@
     <ImageButton
         android:visibility="gone"
         android:src="@drawable/harold6"
-        android:id="@+id/installMovieMenu"
+        android:id="@+id/installLauncher"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:paddingBottom="250dp"
-        android:onClick="installMovieMenu"
+        android:onClick="installLauncher"
         android:layout_above="@+id/openMenu"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

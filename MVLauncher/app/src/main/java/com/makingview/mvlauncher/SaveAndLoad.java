@@ -14,14 +14,7 @@ public class SaveAndLoad
     final static String fileName = "data.txt";
     final static String path = Environment.getDataDirectory().getAbsolutePath();
 
-    private String pathString = null;
-
-    public SaveAndLoad(String path)
-    {
-        this.pathString = path;
-    }
-
-    public void Save(String url, String version)
+    public void Save(String url, String version, String fileName)
     {
         try
         {
@@ -31,7 +24,6 @@ public class SaveAndLoad
             if(!createPath.exists())
                 createPath.mkdirs();
 
-            String fileName = "/sav.data";
             File file = new File(path + fileName);
 
             PrintWriter writer = new PrintWriter(file, "UTF-8");

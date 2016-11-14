@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.File;
@@ -38,6 +40,10 @@ public class HomeActivity extends Activity
 
     private String downloadPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
     private String launcherApkPath = "http://video.makingview.no/apps/gearVR/apks/app-release.apk";
+
+    private String type = "application/vnd.android.package-archive";
+    private String apkPath;
+    private String movieMenuPath;
 
     private DownloadManager downloadManager;
 
@@ -71,15 +77,39 @@ public class HomeActivity extends Activity
     public void downloadMovieMenu()
     {
         Uri tempUri = Uri.parse(downloadPath);
-        Long tempID = DownloadData(tempUri);
+        Long tempID = DownloadData(tempUri, "MovieMenu.apk");
         queueID.add(tempID);
     }
 
     public void downloadLauncher()
     {
         Uri tempUri = Uri.parse(launcherApkPath);
-        Long tempID = DownloadData(tempUri);
+        Long tempID = DownloadData(tempUri, "Launcher.apk");
         queueID.add(tempID);
+    }
+
+    private void prepareLauncherUpdateButton(String path)
+    {
+        /*Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setDataAndType(Uri.fromFile(new File(path)), type);
+        startActivity(install);*/
+
+        apkPath = path;
+
+        ImageButton LayoutButton = (ImageButton) findViewById(R.id.installLauncher);
+        LayoutButton.setVisibility(View.VISIBLE);
+    }
+
+    private void prepareMovieMenuUpdateButton(String path)
+    {
+
+    }
+
+   private void installLauncher()
+    {
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setDataAndType(Uri.fromFile(new File(apkPath)), type);
+        startActivity(install);
     }
 
     public void installDownloadedAPK(String fileName)
@@ -96,7 +126,7 @@ public class HomeActivity extends Activity
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
     //create the functionality ourself.
-    public long DownloadData (Uri uri) {
+    public long DownloadData (Uri uri, String name) {
 
         long downloadReference; //Reference to the object to be downloaded
 
@@ -110,7 +140,7 @@ public class HomeActivity extends Activity
         request.setDescription("Movie Menu update"); //Description of the download
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, "MovieMenu.apk"); //Saveposition of APK
+        request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Saveposition of APK
 
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
@@ -156,7 +186,15 @@ public class HomeActivity extends Activity
                     //This is String I pass to openFile method
                     String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
 
-                    installDownloadedAPK(savedFilePath);
+                    //installDownloadedAPK(savedFilePath);
+
+
+                    Log.d("test", "1 " + savedFilePath);
+
+                    if(savedFilePath.contains("Launcher"))
+                        prepareLauncherUpdateButton(savedFilePath);
+                    if(savedFilePath.contains("MovieMenu"))
+                        prepareMovieMenuUpdateButton(savedFilePath);
 
                     Toast toast = Toast.makeText(HomeActivity.this,
                             "Download Completed", Toast.LENGTH_LONG);
