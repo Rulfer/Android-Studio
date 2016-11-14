@@ -42,9 +42,13 @@ public class CheckAppVersion
         updateLauncher = false;
     }
 
-    public void checkNewVsOldData(int movieMenuValue, int launcherValue)
+    public void checkNewVsOldData(Context context, int movieMenuValue, int launcherValue)
     {
         sav = new SaveAndLoad();
+        String otherTest = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
+        final PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(otherTest, 0);
+        Log.d("localapk", info.versionName + " || " + info.versionCode);
         int currentVersion;
         String result;
         result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenuVersion.txt");

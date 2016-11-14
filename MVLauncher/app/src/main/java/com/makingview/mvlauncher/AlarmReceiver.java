@@ -53,7 +53,7 @@ public class AlarmReceiver extends BroadcastReceiver
         }
 
         cav = new CheckAppVersion();
-        cav.checkNewVsOldData(xmlMovieMenuVersion, xmlLauncherVersion);
+        cav.checkNewVsOldData(context, xmlMovieMenuVersion, xmlLauncherVersion);
 
 
         updateMovieMenu = cav.returnMovieMenu();
