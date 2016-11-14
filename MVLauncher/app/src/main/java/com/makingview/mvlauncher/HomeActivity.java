@@ -93,10 +93,6 @@ public class HomeActivity extends Activity
 
     private void prepareLauncherUpdateButton(String path)
     {
-        /*Intent install = new Intent(Intent.ACTION_VIEW);
-        install.setDataAndType(Uri.fromFile(new File(path)), type);
-        startActivity(install);*/
-
         rp = new RequestPermissions(HomeActivity.this);
 
         sal = new SaveAndLoad();
@@ -115,31 +111,10 @@ public class HomeActivity extends Activity
 
    public void updateLauncher(View view)
     {
-        Log.d("test", "1");
-        MimeTypeMap map = MimeTypeMap.getSingleton();
-        Log.d("test", "2");
-        String ext = MimeTypeMap.getFileExtensionFromUrl((apkPath));
-        Log.d("test", "3");
-        String otherType = map.getMimeTypeFromExtension(ext);
-
-        Log.d("test", "4");
         Intent install = new Intent(Intent.ACTION_VIEW);
-        Log.d("test", "5");
-        install.setDataAndType(Uri.fromFile(new File(apkPath)), otherType);
-        Log.d("test", "6");
+        install.setDataAndType(Uri.fromFile(new File(apkPath)), type);
         startActivity(install);
     }
-
-    /*public void installDownloadedAPK(String fileName)
-    {
-        MimeTypeMap map = MimeTypeMap.getSingleton();
-        String ext = MimeTypeMap.getFileExtensionFromUrl((fileName));
-        String type = map.getMimeTypeFromExtension(ext);
-
-        Intent install = new Intent(Intent.ACTION_VIEW);
-        install.setDataAndType(Uri.fromFile(new File(fileName)), type);
-        startActivity(install);
-    }*/
 
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
@@ -213,11 +188,6 @@ public class HomeActivity extends Activity
                         prepareLauncherUpdateButton(savedFilePath);
                     if(savedFilePath.contains("MovieMenu"))
                         prepareMovieMenuUpdateButton(savedFilePath);
-
-                    Toast toast = Toast.makeText(HomeActivity.this,
-                            "Download Completed", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP, 25, 400);
-                    toast.show();
                 } else {
                     Toast toast = Toast.makeText(HomeActivity.this,
                             "Download Cancelled", Toast.LENGTH_LONG);
@@ -259,6 +229,5 @@ public class HomeActivity extends Activity
 
         //set the alarm for particular time
         alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-        Toast.makeText(this, "Alarm Scheduled by HomeActivity", Toast.LENGTH_LONG).show();
     }
 }

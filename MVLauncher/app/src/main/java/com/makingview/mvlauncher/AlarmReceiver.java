@@ -106,6 +106,5 @@ public class AlarmReceiver extends BroadcastReceiver
 
         //set the alarm for particular time
         alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(context,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-        Toast.makeText(context, "Alarm Scheduled by AlarmReciever", Toast.LENGTH_SHORT).show();
     }
 }
