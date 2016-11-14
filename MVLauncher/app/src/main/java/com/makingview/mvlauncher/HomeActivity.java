@@ -109,6 +109,15 @@ public class HomeActivity extends Activity
         rp = new RequestPermissions(HomeActivity.this);
     }
 
+    private boolean checkDownloadedLauncherApkVersion()
+    {
+        boolean downloadNewApk = false;
+
+
+
+        return downloadNewApk;
+    }
+
    public void updateLauncher(View view)
     {
         Intent install = new Intent(Intent.ACTION_VIEW);

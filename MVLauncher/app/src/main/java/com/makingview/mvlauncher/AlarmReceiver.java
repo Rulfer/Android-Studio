@@ -55,7 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver
         }
 
         cav = new CheckAppVersion();
-        cav.checkAllApps(context, xmlMovieMenuVersion, xmlLauncherVersion);
+        cav.checkNewVsOldData(xmlMovieMenuVersion, xmlLauncherVersion);
 
 
         updateMovieMenu = cav.returnMovieMenu();
@@ -65,11 +65,12 @@ public class AlarmReceiver extends BroadcastReceiver
         if(updateMovieMenu == true)
         {
             Log.d("update", "MovieMenu");
+
             sendMessage(context, "update movieMenu");
         }
         if(updateLauncher == true)
         {
-            Log.d("update", "launcher");
+            //Log.d("update", "launcher");
             sendMessage(context, "update launcher");
         }
 

@@ -3,11 +3,13 @@ package com.makingview.mvlauncher;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.util.Log;
 
 public class CheckAppVersion
 {
     ReadXmlFile rxf;
+    SaveAndLoad sav;
     int movieMenuVersion;
     int launcherVersion;
 
@@ -35,6 +37,35 @@ public class CheckAppVersion
 
         updateMovieMenu = false;
         updateLauncher = false;
+    }
+
+    public void checkNewVsOldData(int movieMenuValue, int launcherValue)
+    {
+        sav = new SaveAndLoad();
+        Integer currentVersion;
+        String result;
+        result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenuVersion.txt");
+        if(result != "error")
+        {
+            Log.d("versionresult", result);
+            currentVersion = Integer.getInteger(result);
+            if(currentVersion < movieMenuValue) //The currently downloaded apk is outdatet
+            {
+                updateMovieMenu = true;
+                sav.Save(Integer.toString(movieMenuValue), "MovieMenuVersion.txt");
+            }
+        }
+
+        result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/LauncherVersion.txt");
+        if(result != "error")
+        {
+            currentVersion = Integer.getInteger(result);
+            if(currentVersion < movieMenuValue) //The currently downloaded apk is outdatet
+            {
+                updateMovieMenu = true;
+                sav.Save(Integer.toString(launcherValue), "LauncherVersion.txt");
+            }
+        }
     }
 
     public void checkAllApps(Context context,int movieValue, int launcherValue)

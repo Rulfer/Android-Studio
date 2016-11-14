@@ -16,13 +16,12 @@ import java.util.Scanner;
 public class SaveAndLoad
 {
     //final static String fileName = "data.txt";
-    final static String path = Environment.getDataDirectory().getAbsolutePath();
+    String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
 
     public void Save(String input, String fileName)
     {
         try
         {
-            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
             File createPath = new File(path);
 
             if(!createPath.exists())
@@ -45,11 +44,11 @@ public class SaveAndLoad
         }
     }
 
-    public String Load(String path)
+    public String Load(String filePath)
     {
         try
         {
-            String content = new Scanner(new File(path)).useDelimiter("\\Z").next();
+            String content = new Scanner(new File(filePath)).useDelimiter("\\Z").next();
             System.out.print(content);
             return content;
         }
