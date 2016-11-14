@@ -16,6 +16,9 @@ public class CheckAppVersion
     int xmlMovieMenuVersion;
     int xmlLauncherVersion;
 
+    int currentVersion = 0;
+    String result = "";
+
     public volatile boolean doneCheking = false;
 
     private boolean updateMovieMenu = false;
@@ -42,29 +45,42 @@ public class CheckAppVersion
     public void checkNewVsOldData(int movieMenuValue, int launcherValue)
     {
         sav = new SaveAndLoad();
-        Integer currentVersion;
+        int currentVersion;
         String result;
         result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenuVersion.txt");
         if(result != "error")
         {
-            Log.d("versionresult", result);
-            currentVersion = Integer.getInteger(result);
+            currentVersion = Integer.parseInt(result);
             if(currentVersion < movieMenuValue) //The currently downloaded apk is outdatet
             {
                 updateMovieMenu = true;
                 sav.Save(Integer.toString(movieMenuValue), "MovieMenuVersion.txt");
             }
+            else
+                updateMovieMenu = false;
+        }
+        else //Either the file does not exist, or something else is wrong. Either way, redownload apk
+        {
+            updateMovieMenu = true;
+            sav.Save(Integer.toString(movieMenuValue), "MovieMenuVersion.txt");
         }
 
         result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/LauncherVersion.txt");
         if(result != "error")
         {
-            currentVersion = Integer.getInteger(result);
-            if(currentVersion < movieMenuValue) //The currently downloaded apk is outdatet
+            currentVersion = Integer.parseInt(result);
+            if(currentVersion < launcherValue) //The currently downloaded apk is outdatet
             {
-                updateMovieMenu = true;
+                updateLauncher = true;
                 sav.Save(Integer.toString(launcherValue), "LauncherVersion.txt");
             }
+            else
+                updateLauncher = false;
+        }
+        else //Either the file does not exist, or something else is wrong. Either way, redownload apk
+        {
+            updateLauncher = true;
+            sav.Save(Integer.toString(launcherValue), "LauncherVersion.txt");
         }
     }
 

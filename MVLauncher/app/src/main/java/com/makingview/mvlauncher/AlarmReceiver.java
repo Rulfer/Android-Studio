@@ -43,8 +43,6 @@ public class AlarmReceiver extends BroadcastReceiver
 
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
-        Toast.makeText(context, "beep beep!", Toast.LENGTH_SHORT).show();
-
         rxf = new ReadXmlFile();
         rxf.fetchXML();
 
@@ -61,7 +59,6 @@ public class AlarmReceiver extends BroadcastReceiver
         updateMovieMenu = cav.returnMovieMenu();
         updateLauncher = cav.returnLauncher();
 
-        Log.d("pls update domsehint", "now");
         if(updateMovieMenu == true)
         {
             Log.d("update", "MovieMenu");

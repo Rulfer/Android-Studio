@@ -100,42 +100,10 @@ public class ReadXmlFile
                         if(name.equals("movieMenuVersion"))
                         {
                             movieMenuVersion = Integer.parseInt(text);
-                            /*sav = new SaveAndLoad();
-                            sav.Save(Integer.toString(movieMenuVersion), "MovieMenuVersion.txt");
-                            String result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenuVersion.txt");
-
-                            if(result == "error") //Either failed at reading, or there is no version
-                            {
-                                sav.Save(Integer.toString(movieMenuVersion), "MovieMenuVersion.txt");
-                            }
-                            else
-                            {
-                                Integer savedVersion = Integer.getInteger(result);
-                                if(savedVersion < movieMenuVersion) //The XML version is higher than the already downloaded version
-                                {
-                                    sav.Save(Integer.toString(movieMenuVersion), "MovieMenuVersion.txt");
-                                }
-                            }*/
                         }
                         if(name.equals("launcherVersion"))
                         {
                             launcherVersion = Integer.parseInt(text);
-
-                            /*sav = new SaveAndLoad();
-                            String result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/LauncherVersion.txt");
-
-                            if(result == "error") //Either failed at reading, or there is no version
-                            {
-                                sav.Save(Integer.toString(launcherVersion), "LauncherVersion.txt");
-                            }
-                            else
-                            {
-                                Integer savedVersion = Integer.getInteger(result);
-                                if(savedVersion < launcherVersion) //The XML version is higher than the already downloaded version
-                                {
-                                    sav.Save(Integer.toString(launcherVersion), "LauncherVersion.txt");
-                                }
-                            }*/
                         }
                         break;
                 }
