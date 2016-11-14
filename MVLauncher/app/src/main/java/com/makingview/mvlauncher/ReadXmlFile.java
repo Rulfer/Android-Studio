@@ -18,6 +18,7 @@ import java.util.List;
 public class ReadXmlFile
 {
     CheckAppVersion cav;
+    SaveAndLoad sav;
 
     String urlString = "http://video.makingview.no/apps/gearVR/apkinfo.xml";
 
@@ -97,13 +98,15 @@ public class ReadXmlFile
                     case XmlPullParser.END_TAG:
                         if(name.equals("movieMenuVersion"))
                         {
-                            Log.d("found moviemenuversion", text);
                             movieMenuVersion = Integer.parseInt(text);
+                            sav = new SaveAndLoad();
+                            sav.Save(Integer.toString(movieMenuVersion), "MovieMenuVersion.txt");
                         }
                         if(name.equals("launcherVersion"))
                         {
-                            Log.d("found launcherversion", text);
                             launcherVersion = Integer.parseInt(text);
+                            sav = new SaveAndLoad();
+                            sav.Save(Integer.toString(launcherVersion), "LauncherVersion.txt");
                         }
                         break;
                 }

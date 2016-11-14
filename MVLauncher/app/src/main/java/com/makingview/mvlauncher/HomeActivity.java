@@ -37,6 +37,8 @@ import java.util.List;
 public class HomeActivity extends Activity
 {
     CheckAppVersion cav;
+    RequestPermissions rp;
+    SaveAndLoad sal;
 
     private String downloadPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
     private String launcherApkPath = "http://video.makingview.no/apps/gearVR/apks/app-release.apk";
@@ -61,6 +63,7 @@ public class HomeActivity extends Activity
                 new IntentFilter("custom-event-name"));
 
         initiateAlarm();
+        rp = new RequestPermissions(HomeActivity.this);
     }
 
     public void openMovieMenu(View view) {
@@ -94,6 +97,11 @@ public class HomeActivity extends Activity
         install.setDataAndType(Uri.fromFile(new File(path)), type);
         startActivity(install);*/
 
+        rp = new RequestPermissions(HomeActivity.this);
+
+        sal = new SaveAndLoad();
+        sal.Save(path, "Launcher.txt");
+
         apkPath = path;
 
         ImageButton LayoutButton = (ImageButton) findViewById(R.id.installLauncher);
@@ -102,17 +110,27 @@ public class HomeActivity extends Activity
 
     private void prepareMovieMenuUpdateButton(String path)
     {
-
+        rp = new RequestPermissions(HomeActivity.this);
     }
 
-   private void installLauncher()
+   public void updateLauncher(View view)
     {
+        Log.d("test", "1");
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        Log.d("test", "2");
+        String ext = MimeTypeMap.getFileExtensionFromUrl((apkPath));
+        Log.d("test", "3");
+        String otherType = map.getMimeTypeFromExtension(ext);
+
+        Log.d("test", "4");
         Intent install = new Intent(Intent.ACTION_VIEW);
-        install.setDataAndType(Uri.fromFile(new File(apkPath)), type);
+        Log.d("test", "5");
+        install.setDataAndType(Uri.fromFile(new File(apkPath)), otherType);
+        Log.d("test", "6");
         startActivity(install);
     }
 
-    public void installDownloadedAPK(String fileName)
+    /*public void installDownloadedAPK(String fileName)
     {
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String ext = MimeTypeMap.getFileExtensionFromUrl((fileName));
@@ -121,7 +139,7 @@ public class HomeActivity extends Activity
         Intent install = new Intent(Intent.ACTION_VIEW);
         install.setDataAndType(Uri.fromFile(new File(fileName)), type);
         startActivity(install);
-    }
+    }*/
 
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to

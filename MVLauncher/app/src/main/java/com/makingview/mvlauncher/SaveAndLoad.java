@@ -1,5 +1,7 @@
 package com.makingview.mvlauncher;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -7,14 +9,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class SaveAndLoad
 {
-    final static String fileName = "data.txt";
+    //final static String fileName = "data.txt";
     final static String path = Environment.getDataDirectory().getAbsolutePath();
 
-    public void Save(String url, String version, String fileName)
+    public void Save(String input, String fileName)
     {
         try
         {
@@ -27,7 +30,7 @@ public class SaveAndLoad
             File file = new File(path + fileName);
 
             PrintWriter writer = new PrintWriter(file, "UTF-8");
-            writer.println(url);
+            writer.print(input);
             writer.close();
             Log.d("save tester", "SAVED!");
         }
