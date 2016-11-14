@@ -6,6 +6,9 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
+import java.io.IOException;
+
 public class CheckAppVersion
 {
     ReadXmlFile rxf;
@@ -45,46 +48,45 @@ public class CheckAppVersion
     public void checkNewVsOldData(Context context, int movieMenuValue, int launcherValue)
     {
         sav = new SaveAndLoad();
-        String otherTest = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
-        final PackageManager pm = context.getPackageManager();
-        PackageInfo info = pm.getPackageArchiveInfo(otherTest, 0);
-        Log.d("localapk", info.versionName + " || " + info.versionCode);
-        int currentVersion;
-        String result;
-        result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenuVersion.txt");
-        if(result != "error")
+        String launcherAPK;
+        String movieMenuAPK;
+        try
         {
-            currentVersion = Integer.parseInt(result);
-            if(currentVersion < movieMenuValue) //The currently downloaded apk is outdatet
-            {
-                updateMovieMenu = true;
-                sav.Save(Integer.toString(movieMenuValue), "MovieMenuVersion.txt");
-            }
-            else
-                updateMovieMenu = false;
-        }
-        else //Either the file does not exist, or something else is wrong. Either way, redownload apk
-        {
-            updateMovieMenu = true;
-            sav.Save(Integer.toString(movieMenuValue), "MovieMenuVersion.txt");
-        }
+            launcherAPK = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
+            final PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(launcherAPK, 0);
 
-        result = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/LauncherVersion.txt");
-        if(result != "error")
-        {
-            currentVersion = Integer.parseInt(result);
-            if(currentVersion < launcherValue) //The currently downloaded apk is outdatet
+            if(info.versionCode < launcherValue)
             {
                 updateLauncher = true;
-                sav.Save(Integer.toString(launcherValue), "LauncherVersion.txt");
             }
             else
                 updateLauncher = false;
         }
-        else //Either the file does not exist, or something else is wrong. Either way, redownload apk
+        catch(Exception e) //It failed somewhere, so just redownload the file
         {
             updateLauncher = true;
-            sav.Save(Integer.toString(launcherValue), "LauncherVersion.txt");
+        }
+
+        try
+        {
+            movieMenuAPK = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
+            final PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(movieMenuAPK, 0);
+
+            Log.d("info", "code " + info.versionCode);
+            Log.d("info", "name" + info.versionName);
+
+            if(info.versionCode < movieMenuValue) //This should probably be versionName instead
+            {
+                updateMovieMenu = true;
+            }
+            else
+                updateMovieMenu = false;
+        }
+        catch(Exception e) //It failed somewhere, so just redownload the file
+        {
+            updateMovieMenu = true;
         }
     }
 

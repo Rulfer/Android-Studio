@@ -93,20 +93,46 @@ public class HomeActivity extends Activity
 
     private void prepareLauncherUpdateButton(String path)
     {
+        ImageButton LayoutButton = (ImageButton) findViewById(R.id.installLauncher);
+        LayoutButton.setVisibility(View.GONE);
         rp = new RequestPermissions(HomeActivity.this);
 
         sal = new SaveAndLoad();
+
+        try{
+            String launcherAPK = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
+            File file = new File(launcherAPK);
+            boolean result = file.delete();
+        }
+        catch(Exception e)
+        {
+            Log.d("Error", "Deleting previous apk file..." + e);
+        }
+
         sal.Save(path, "Launcher.txt");
 
         apkPath = path;
 
-        ImageButton LayoutButton = (ImageButton) findViewById(R.id.installLauncher);
         LayoutButton.setVisibility(View.VISIBLE);
     }
 
     private void prepareMovieMenuUpdateButton(String path)
     {
-        rp = new RequestPermissions(HomeActivity.this);
+        sal = new SaveAndLoad();
+
+        try{
+            String movieMenuAPK = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
+            File file = new File(movieMenuAPK);
+            boolean result = file.delete();
+        }
+        catch(Exception e)
+        {
+            Log.d("Error", "Deleting previous apk file..." + e);
+        }
+
+        sal.Save(path, "MovieMenu.txt");
+
+        movieMenuPath = path;
     }
 
     private boolean checkDownloadedLauncherApkVersion()
@@ -136,7 +162,7 @@ public class HomeActivity extends Activity
         DownloadManager.Request request = new DownloadManager.Request(uri); //The file to download
 
         //Setting title of request
-        request.setTitle("Downloading " + "MovieMenu.apk"); //Title of the download to be displayed on the phone
+        request.setTitle("Downloading " + name); //Title of the download to be displayed on the phone
 
         //Setting description of request
         request.setDescription("Movie Menu update"); //Description of the download
