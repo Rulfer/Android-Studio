@@ -28,7 +28,7 @@ public class SaveAndLoad
             if(!createPath.exists())
                 createPath.mkdirs();
 
-            File file = new File(path + fileName);
+            File file = new File(path + "/" + fileName);
 
             PrintWriter writer = new PrintWriter(file, "UTF-8");
             writer.print(input);
