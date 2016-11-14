@@ -12,8 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="250dp"
         android:onClick="openMovieMenu"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="15dp" />
+
 
     <ImageButton
         android:visibility="gone"
@@ -23,10 +26,20 @@
         android:layout_height="100dp"
         android:paddingBottom="250dp"
         android:onClick="updateLauncher"
+        android:layout_marginBottom="62dp"
         android:layout_above="@+id/openMenu"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="31dp" />
+        android:layout_alignParentStart="true" />
 
-
+    <ImageButton
+        android:visibility="gone"
+        android:src="@drawable/harold6"
+        android:id="@+id/installMovieMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:paddingTop="200dp"
+        android:onClick="updateMovieMenu"
+        android:layout_above="@+id/installLauncher"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp" />
 </RelativeLayout>

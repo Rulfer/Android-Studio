@@ -40,11 +40,11 @@ public class HomeActivity extends Activity
     RequestPermissions rp;
     SaveAndLoad sal;
 
-    private String downloadPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
+    private String movieMenuApkPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
     private String launcherApkPath = "http://video.makingview.no/apps/gearVR/apks/app-release.apk";
 
     private String type = "application/vnd.android.package-archive";
-    private String apkPath;
+    private String launcherPath;
     private String movieMenuPath;
 
     private DownloadManager downloadManager;
@@ -56,6 +56,8 @@ public class HomeActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        checkIfUpdateButtonsShouldBeVisible();
+
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
 
@@ -64,6 +66,29 @@ public class HomeActivity extends Activity
 
         initiateAlarm();
         rp = new RequestPermissions(HomeActivity.this);
+    }
+
+    private void checkIfUpdateButtonsShouldBeVisible()
+    {
+        cav = new CheckAppVersion();
+        cav.checkAllApps(HomeActivity.this);
+
+        Log.d("checkapks", "1");
+        if(cav.returnLauncher() == true)
+        {
+            Log.d("checkapks", "2");
+            ImageButton LauncherButton = (ImageButton) findViewById(R.id.installLauncher);
+            LauncherButton.setVisibility(View.VISIBLE);
+        }
+        if(cav.returnMovieMenu() == true)
+        {
+            Log.d("checkapks", "3");
+            ImageButton MovieMenuButton = (ImageButton) findViewById(R.id.installMovieMenu);
+            MovieMenuButton.setVisibility(View.VISIBLE);
+        }
+
+        Log.d("checkapks", "4");
+        cav.reset();
     }
 
     public void openMovieMenu(View view) {
@@ -79,7 +104,7 @@ public class HomeActivity extends Activity
 
     public void downloadMovieMenu()
     {
-        Uri tempUri = Uri.parse(downloadPath);
+        Uri tempUri = Uri.parse(movieMenuApkPath);
         Long tempID = DownloadData(tempUri, "MovieMenu.apk");
         queueID.add(tempID);
     }
@@ -111,7 +136,7 @@ public class HomeActivity extends Activity
 
         sal.Save(path, "Launcher.txt");
 
-        apkPath = path;
+        launcherPath = path;
 
         LayoutButton.setVisibility(View.VISIBLE);
     }
@@ -135,19 +160,17 @@ public class HomeActivity extends Activity
         movieMenuPath = path;
     }
 
-    private boolean checkDownloadedLauncherApkVersion()
-    {
-        boolean downloadNewApk = false;
-
-
-
-        return downloadNewApk;
-    }
-
    public void updateLauncher(View view)
     {
         Intent install = new Intent(Intent.ACTION_VIEW);
-        install.setDataAndType(Uri.fromFile(new File(apkPath)), type);
+        install.setDataAndType(Uri.fromFile(new File(launcherPath)), type);
+        startActivity(install);
+    }
+
+    public void updateMovieMenu(View view)
+    {
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setDataAndType(Uri.fromFile(new File(movieMenuPath)), type);
         startActivity(install);
     }
 

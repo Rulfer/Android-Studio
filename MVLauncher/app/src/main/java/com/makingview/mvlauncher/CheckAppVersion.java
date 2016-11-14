@@ -90,35 +90,60 @@ public class CheckAppVersion
         }
     }
 
-    public void checkAllApps(Context context,int movieValue, int launcherValue)
+    public void checkAllApps(Context context)
     {
-        xmlMovieMenuVersion = movieValue;
-        xmlLauncherVersion = launcherValue;
-
+        sav = new SaveAndLoad();
         movieMenuVersion = checkMovieMenu(context);
         launcherVersion = checkLauncher(context);
 
-        if(movieMenuVersion < xmlMovieMenuVersion)
-            updateMovieMenu = true;
-        else
+        try
+        {
+            String movieMenuPath = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
+            final PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(movieMenuPath, 0);
+
+            if(info.versionCode > movieMenuVersion)
+            {
+                updateMovieMenu = true;
+            }
+            else
+                updateMovieMenu = false;
+        }
+        catch(Exception e)
+        {
             updateMovieMenu = false;
+        }
 
-        if(launcherVersion < xmlLauncherVersion)
-            updateLauncher = true;
-        else
+        try
+        {
+            String launcherPath = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
+            final PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(launcherPath, 0);
+
+            if(info.versionCode > launcherVersion)
+            {
+                updateLauncher = true;
+            }
+            else
+                updateLauncher = false;
+        }
+        catch(Exception e)
+        {
             updateLauncher = false;
-
-        Log.d("installed Menu", "" + movieMenuVersion);
-        Log.d("installed Launcher", "" + launcherVersion);
-
-        Log.d("update menu", "" + updateMovieMenu);
-        Log.d("update launcher", "" + updateLauncher);
-
-        doneCheking = true;
+        }
     }
 
     private int checkMovieMenu(Context context)
     {
+        /*
+        String movieMenuPath = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
+            final PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(movieMenuPath, 0);
+
+            if(Integer.parseInt(info.versionName) > movieMenuVersion)
+            {
+                updateMovieMenu = true;
+            }*/
         int temp;
         String pName = "com.MakingView.movieMenu";
         PackageManager pm = context.getPackageManager();
