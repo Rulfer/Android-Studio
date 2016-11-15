@@ -267,21 +267,20 @@ public class HomeActivity extends Activity
         public void onReceive(Context context, Intent intent) {
             try
             {
+                Bundle extras = intent.getExtras();
                 DownloadManager.Query DownloadQuery = new DownloadManager.Query();
-                DownloadQuery.setFilterById(queueID.get(0));
+                DownloadQuery.setFilterById(extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID));
 
                 Cursor cursor = downloadManager.query(DownloadQuery);
 
                 if (cursor.moveToFirst())
                 {
-                    DownloadManager.Query query = new DownloadManager.Query();
+                    /*DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
-                    cursor.moveToFirst();
+                    cursor.moveToFirst();*/
 
                     //This is String I pass to openFile method
                     String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                    
-
 
                     if(savedFilePath.contains("Launcher"))
                         prepareLauncherUpdateButton(savedFilePath);
@@ -302,14 +301,14 @@ public class HomeActivity extends Activity
                 Log.d("Download failed", e.toString());
             }
 
-            try
+            /*try
             {
                 queueID.remove(0);
             }
             catch (Exception e)
             {
                 Log.d("queueID is empty", e.toString());
-            }
+            }*/
         }
     };
 
