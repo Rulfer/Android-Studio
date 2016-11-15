@@ -28,11 +28,18 @@ public class DownloadMoviesAndPosters
         File[] files = folder.listFiles();
 
         try{
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isFile()) {
-                    System.out.println("File " + files[i].getName());
-                } else if (files[i].isDirectory()) {
-                    System.out.println("Directory " + files[i].getName());
+            for (int i = 0; i < files.length; i++)
+            {
+                if (files[i].isFile())
+                {
+                    if (files[i].getName().contains(".m-experience")) {
+                        Log.d("found movie", files[i].getName());
+                        localMovies.add(files[i].getName());
+                    }
+                    if (files[i].getName().contains(".p-experience")) {
+                        Log.d("found poster", files[i].getName());
+                        localPosters.add(files[i].getName());
+                    }
                 }
             }
         }
