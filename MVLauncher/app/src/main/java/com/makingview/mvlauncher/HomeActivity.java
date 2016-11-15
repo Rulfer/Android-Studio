@@ -39,7 +39,7 @@ public class HomeActivity extends Activity
     CheckAppVersion cav;
     RequestPermissions rp;
     SaveAndLoad sal;
-    DownloadMoviesAndPosters map;
+    DownloadMoviesAndPosters dmp;
 
     private String movieMenuApkPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
     private String launcherApkPath = "http://video.makingview.no/apps/gearVR/apks/app-release.apk";
@@ -67,11 +67,10 @@ public class HomeActivity extends Activity
         LocalBroadcastManager.getInstance(this).registerReceiver(localMessageReciever,
                 new IntentFilter("custom-event-name"));
 
+        dmp = new DownloadMoviesAndPosters();
+        dmp.scanForMoviesAndPosters();
+
         initiateAlarm();
-
-
-        map = new DownloadMoviesAndPosters();
-        map.scanForMoviesAndPosters();
     }
 
     private void checkIfUpdateButtonsShouldBeVisible()
