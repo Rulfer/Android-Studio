@@ -20,21 +20,24 @@ import java.util.List;
 
 public class DownloadMoviesAndPosters
 {
-    List<String> localMovies = new ArrayList<>();
-    List<String> localPosters = new ArrayList<>();
-    List<String> names = new ArrayList<>();
-    List<String> downloadLinks = new ArrayList<>();
+    private List<String> localMovies = new ArrayList<>();
+    private List<String> localPosters = new ArrayList<>();
+    private List<String> names = new ArrayList<>();
+    private List<String> downloadLinks = new ArrayList<>();
 
-    List<String> moviesToDownload = new ArrayList<>();
-    List<String> postersToDownload = new ArrayList<>();
+    private List<String> moviesToDownload = new ArrayList<>();
+    private List<String> postersToDownload = new ArrayList<>();
+    private List<String> moviesToDownloadNames = new ArrayList<>();
+    private List<String> postersToDownloadNames = new ArrayList<>();
 
-    String movieFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString();
-    String xmlPath = "http://video.makingview.no/apps/gearVR/makingview.xml";
+    private String movieFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString();
+    private String xmlPath = "http://video.makingview.no/apps/gearVR/makingview.xml";
 
     private XmlPullParserFactory xmlFactoryObject;
 
-    public volatile boolean parsingComplete = true;
+    public volatile boolean parsingComplete = false;
     public volatile boolean downloadFailed = false;
+    public volatile boolean codeFailed = false;
 
     public List<String> returnMovies()
     {
@@ -46,6 +49,10 @@ public class DownloadMoviesAndPosters
         return postersToDownload;
     }
 
+    public List<String> returnMoviesNames() {return moviesToDownloadNames; }
+
+    public List<String> returnPosterNames() {return postersToDownloadNames; }
+
     public void scanForMoviesAndPosters()
     {
         File folder = new File(movieFolder);
@@ -55,14 +62,8 @@ public class DownloadMoviesAndPosters
 
         File[] files = folder.listFiles();
 
-        try{
-            localMovies.clear();
-            localPosters.clear();
-        }
-        catch (Exception e)
-        {
-            Log.d("Error clearing lists", e.toString());
-        }
+        localMovies.clear();
+        localPosters.clear();
 
         try{
             for (int i = 0; i < files.length; i++)
@@ -82,6 +83,8 @@ public class DownloadMoviesAndPosters
         }
         catch(NullPointerException e)
         {
+            parsingComplete = true;
+            codeFailed = true;
             Log.d("Scan error", e.toString());
         }
 
@@ -113,7 +116,9 @@ public class DownloadMoviesAndPosters
                     parseXMLAndStoreIt(myparser);
                     stream.close();
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
+                    codeFailed = true;
                     downloadFailed = true;
                     e.printStackTrace();
                 }
@@ -127,14 +132,9 @@ public class DownloadMoviesAndPosters
         String text=null;
         try
         {
-            try{
-                names.clear();
-                downloadLinks.clear();
-            }
-            catch (Exception e)
-            {
-                Log.d("Error clearing lists", e.toString());
-            }
+
+            names.clear();
+            downloadLinks.clear();
 
             event = myParser.getEventType();
 
@@ -165,55 +165,61 @@ public class DownloadMoviesAndPosters
             compareLists();
         }
 
-        catch (Exception e) {
+        catch (Exception e)
+        {
+            codeFailed = true;
+            parsingComplete = true;
             e.printStackTrace();
         }
     }
 
     private void compareLists()
     {
-        boolean foundMovie = false;
-        boolean foundPoster = false;
+        try {
+            boolean foundMovie = false;
+            boolean foundPoster = false;
 
-        for(int i = 0; i < names.size(); i++)
-        {
-            String movieName = names.get(i) + ".m-experience";
-            for(int j = 0; j < localMovies.size(); j++)
-            {
-                if(movieName.equals(localMovies.get(j)))
-                {
-                    Log.d("FOUND", movieName);
-                    foundMovie = true;
+            for (int i = 0; i < names.size(); i++) {
+                String movieName = names.get(i) + ".m-experience";
+                for (int j = 0; j < localMovies.size(); j++) {
+                    if (movieName.equals(localMovies.get(j))) {
+                        Log.d("FOUND", movieName);
+                        foundMovie = true;
+                    }
                 }
-            }
 
-            String posterName = names.get(i) + ".p-experience";
-            for(int j = 0; j < localPosters.size(); j++)
-            {
-                if(posterName.equals(localPosters.get(j)))
-                {
-                    Log.d("FOUND", posterName);
-                    foundPoster = true;
+                String posterName = names.get(i) + ".p-experience";
+                for (int j = 0; j < localPosters.size(); j++) {
+                    if (posterName.equals(localPosters.get(j))) {
+                        Log.d("FOUND", posterName);
+                        foundPoster = true;
+                    }
                 }
+
+                if (!foundMovie) {
+                    Log.d("MISSING", movieName);
+                    Log.d("Download link", downloadLinks.get(i) + ".m-experience");
+                    moviesToDownload.add(downloadLinks.get(i) + ".m-experience");
+                    moviesToDownloadNames.add(movieName);
+                }
+                if (!foundPoster) {
+                    Log.d("MISSING", posterName);
+                    Log.d("Download link", downloadLinks.get(i) + ".p-experience");
+                    postersToDownload.add(downloadLinks.get(i) + ".p-experience");
+                    postersToDownloadNames.add(posterName);
+                }
+
+                foundMovie = false;
+                foundPoster = false;
             }
 
-            if(!foundMovie)
-            {
-                Log.d("MISSING", movieName);
-                Log.d("Download link", downloadLinks.get(i) + ".m-experience");
-                moviesToDownload.add(downloadLinks.get(i) + ".m-experience");
-            }
-            if(!foundPoster)
-            {
-                Log.d("MISSING", posterName);
-                Log.d("Download link", downloadLinks.get(i) + ".p-experience");
-                postersToDownload.add(downloadLinks.get(i) + ".p-experience");
-            }
-
-            foundMovie = false;
-            foundPoster = false;
+            parsingComplete = true;
         }
-
-        parsingComplete = false;
+        catch(Exception e)
+        {
+            codeFailed = true;
+            parsingComplete = true;
+            e.printStackTrace();
+        }
     }
 }

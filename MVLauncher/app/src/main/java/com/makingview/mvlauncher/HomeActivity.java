@@ -175,6 +175,44 @@ public class HomeActivity extends Activity
         startActivity(install);
     }
 
+    public void updateContent()
+    {
+        dmp = new DownloadMoviesAndPosters();
+        List<String> movieQueue = new ArrayList<>();
+        List<String> posterQueue = new ArrayList<>();
+        List<String> movieNames = new ArrayList<>();
+        List<String> posterNames = new ArrayList<>();
+
+        try {movieQueue = dmp.returnMovies();}
+        catch(NullPointerException e){e.printStackTrace();}
+        try {posterQueue = dmp.returnPosters();}
+        catch(NullPointerException e){e.printStackTrace();}
+        try {movieNames = dmp.returnMoviesNames();}
+        catch(NullPointerException e){e.printStackTrace();}
+        try {posterNames = dmp.returnPosterNames();}
+        catch(NullPointerException e){e.printStackTrace();}
+
+        try{
+            for(int i = 0; i < movieNames.size(); i++)
+            {
+                Uri tempUri = Uri.parse(movieQueue.get(i));
+                Long tempID = DownloadData(tempUri, movieNames.get(i));
+                queueID.add(tempID);
+            }
+        }
+        catch(Exception e) {e.printStackTrace();}
+
+        try{
+            for(int i = 0; i < posterNames.size(); i++)
+            {
+                Uri tempUri = Uri.parse(posterQueue.get(i));
+                Long tempID = DownloadData(tempUri, posterNames.get(i));
+                queueID.add(tempID);
+            }
+        }
+        catch(Exception e) {e.printStackTrace();}
+    }
+
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
     //create the functionality ourself.
@@ -216,6 +254,10 @@ public class HomeActivity extends Activity
             {
                 downloadLauncher();
             }
+            if(message == "update content")
+            {
+                updateContent();
+            }
         }
     };
 
@@ -223,7 +265,8 @@ public class HomeActivity extends Activity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            try {
+            try
+            {
                 DownloadManager.Query DownloadQuery = new DownloadManager.Query();
                 DownloadQuery.setFilterById(queueID.get(0));
 
@@ -237,17 +280,17 @@ public class HomeActivity extends Activity
 
                     //This is String I pass to openFile method
                     String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                    
 
-                    //installDownloadedAPK(savedFilePath);
-
-
-                    Log.d("test", "1 " + savedFilePath);
 
                     if(savedFilePath.contains("Launcher"))
                         prepareLauncherUpdateButton(savedFilePath);
                     if(savedFilePath.contains("MovieMenu"))
                         prepareMovieMenuUpdateButton(savedFilePath);
-                } else {
+                }
+
+                else
+                {
                     Toast toast = Toast.makeText(HomeActivity.this,
                             "Download Cancelled", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP, 25, 400);
@@ -259,8 +302,9 @@ public class HomeActivity extends Activity
                 Log.d("Download failed", e.toString());
             }
 
-            try{
-            queueID.remove(0);
+            try
+            {
+                queueID.remove(0);
             }
             catch (Exception e)
             {

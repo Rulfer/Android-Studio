@@ -23,6 +23,7 @@ public class AlarmReceiver extends BroadcastReceiver
 {
     ReadXmlFile rxf;
     CheckAppVersion cav;
+    DownloadMoviesAndPosters dmp;
 
     private int xmlMovieMenuVersion = 0;
     private int xmlLauncherVersion = 0;
@@ -33,7 +34,7 @@ public class AlarmReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+        /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.uuuuuwat);
         mBuilder.setContentTitle("My notification");
         mBuilder.setContentText("Hello World!");
@@ -41,7 +42,7 @@ public class AlarmReceiver extends BroadcastReceiver
 
         NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());*/
 
         rxf = new ReadXmlFile();
         rxf.fetchXML();
@@ -55,21 +56,33 @@ public class AlarmReceiver extends BroadcastReceiver
         cav = new CheckAppVersion();
         cav.checkNewVsOldData(context, xmlMovieMenuVersion, xmlLauncherVersion);
 
-
         updateMovieMenu = cav.returnMovieMenu();
         updateLauncher = cav.returnLauncher();
 
         if(updateMovieMenu == true)
         {
-            Log.d("update", "MovieMenu");
-
             sendMessage(context, "update movieMenu");
         }
         if(updateLauncher == true)
         {
-            //Log.d("update", "launcher");
             sendMessage(context, "update launcher");
         }
+
+        dmp = new DownloadMoviesAndPosters();
+        dmp.scanForMoviesAndPosters();
+
+        while(dmp.parsingComplete == false && dmp.downloadFailed == false)
+        {
+            //We are stopping the code from continuing
+        }
+
+        if(dmp.codeFailed == false)
+        {
+            sendMessage(context, "update content");
+        }
+        dmp.codeFailed = false;
+        dmp.downloadFailed = false;
+        dmp.parsingComplete = false;
 
         rxf.reset();
         cav.reset();
@@ -92,7 +105,7 @@ public class AlarmReceiver extends BroadcastReceiver
         // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
 
         //Long time = new GregorianCalendar().getTimeInMillis()+24*60*60*1000;
-        Long time = new GregorianCalendar().getTimeInMillis()+ 10000;
+        Long time = new GregorianCalendar().getTimeInMillis()+ 30000;
         // create an Intent and set the class which will execute when Alarm triggers, here we have
         // given AlarmReciever in the Intent, the onRecieve() method of this class will execute when
         // alarm triggers and
@@ -104,5 +117,6 @@ public class AlarmReceiver extends BroadcastReceiver
 
         //set the alarm for particular time
         alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(context,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+        Toast.makeText(context, "Initate new timer.", Toast.LENGTH_SHORT).show();
     }
 }
