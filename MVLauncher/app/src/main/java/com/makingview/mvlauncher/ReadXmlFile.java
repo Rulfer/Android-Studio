@@ -21,7 +21,7 @@ public class ReadXmlFile
     CheckAppVersion cav;
     SaveAndLoad sav;
 
-    String urlString = "http://video.makingview.no/apps/gearVR/apkinfo.xml";
+    String xmlPath = "http://video.makingview.no/apps/gearVR/apkinfo.xml";
 
     private XmlPullParserFactory xmlFactoryObject;
 
@@ -51,7 +51,7 @@ public class ReadXmlFile
             @Override
             public void run() {
                 try {
-                    URL url = new URL(urlString);
+                    URL url = new URL(xmlPath);
                     HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
                     conn.setReadTimeout(10000 /* milliseconds */);
