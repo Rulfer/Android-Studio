@@ -51,8 +51,6 @@ public class HomeActivity extends Activity
 
     private DownloadManager downloadManager;
 
-    public List<Long> queueID = new ArrayList<>();
-
     List<String> movieQueue = new ArrayList<>();
     List<String> posterQueue = new ArrayList<>();
     List<String> movieNames = new ArrayList<>();
@@ -112,15 +110,13 @@ public class HomeActivity extends Activity
     public void downloadMovieMenu()
     {
         Uri tempUri = Uri.parse(movieMenuApkPath);
-        Long tempID = DownloadData(tempUri, "MovieMenu.apk");
-        queueID.add(tempID);
+        DownloadData(tempUri, "MovieMenu.apk");
     }
 
     public void downloadLauncher()
     {
         Uri tempUri = Uri.parse(launcherApkPath);
-        Long tempID = DownloadData(tempUri, "Launcher.apk");
-        queueID.add(tempID);
+        DownloadData(tempUri, "Launcher.apk");
     }
 
     private void downloadContent(String path)
@@ -132,8 +128,7 @@ public class HomeActivity extends Activity
         Log.d("Downloading", name);
 
         Uri tempUri = Uri.parse(path);
-        Long tempID = DownloadData(tempUri, name);
-        queueID.add(tempID);
+        DownloadData(tempUri, name);
     }
 
     private void prepareLauncherUpdateButton(String path)
@@ -198,9 +193,7 @@ public class HomeActivity extends Activity
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
     //create the functionality ourself.
-    public long DownloadData (Uri uri, String name) {
-
-        long downloadReference; //Reference to the object to be downloaded
+    public void DownloadData (Uri uri, String name) {
 
         downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE); //A reference to the download class
         DownloadManager.Request request = new DownloadManager.Request(uri); //The file to download
@@ -218,11 +211,6 @@ public class HomeActivity extends Activity
         }
         else
             request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Saveposition of APK
-
-        //Enqueue download and save the referenceId
-        downloadReference = downloadManager.enqueue(request);
-
-        return downloadReference; //Return the download refence, so that the code easily can access the downloaded file
     }
 
     //This reciever is used by AlarmReciever.java to tell this class that it should download the XML document
@@ -291,15 +279,6 @@ public class HomeActivity extends Activity
             {
                 Log.d("Download failed", e.toString());
             }
-
-            /*try
-            {
-                queueID.remove(0);
-            }
-            catch (Exception e)
-            {
-                Log.d("queueID is empty", e.toString());
-            }*/
         }
     };
 
