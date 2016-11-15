@@ -13,7 +13,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Created by Bård on 31.10.2016.
@@ -30,6 +32,11 @@ public class AlarmReceiver extends BroadcastReceiver
 
     private boolean updateMovieMenu = false;
     private boolean updateLauncher = false;
+
+    List<String> movieQueue = new ArrayList<>();
+    List<String> posterQueue = new ArrayList<>();
+    List<String> movieNames = new ArrayList<>();
+    List<String> posterNames = new ArrayList<>();
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -73,12 +80,18 @@ public class AlarmReceiver extends BroadcastReceiver
 
         while(dmp.parsingComplete == false && dmp.downloadFailed == false)
         {
-            //We are stopping the code from continuing
+            movieQueue = new ArrayList<>(dmp.returnMovies());
+            posterQueue = new ArrayList<>(dmp.returnPosters());
+            movieNames = new ArrayList<>(dmp.returnMoviesNames());
+            posterNames = new ArrayList<>(dmp.returnPosterNames());
         }
 
         if(dmp.codeFailed == false)
         {
-            sendMessage(context, "update content");
+            for(String message:movieQueue)
+                sendMessage(context, message);
+            for(String message:posterQueue)
+                sendMessage(context, message);
         }
         dmp.codeFailed = false;
         dmp.downloadFailed = false;

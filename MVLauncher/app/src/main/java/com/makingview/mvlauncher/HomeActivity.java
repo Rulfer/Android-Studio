@@ -40,6 +40,7 @@ public class HomeActivity extends Activity
     RequestPermissions rp;
     SaveAndLoad sal;
     DownloadMoviesAndPosters dmp;
+    AlarmReceiver ar;
 
     private String movieMenuApkPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
     private String launcherApkPath = "http://video.makingview.no/apps/gearVR/apks/app-release.apk";
@@ -51,6 +52,11 @@ public class HomeActivity extends Activity
     private DownloadManager downloadManager;
 
     public List<Long> queueID = new ArrayList<>();
+
+    List<String> movieQueue = new ArrayList<>();
+    List<String> posterQueue = new ArrayList<>();
+    List<String> movieNames = new ArrayList<>();
+    List<String> posterNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -117,6 +123,19 @@ public class HomeActivity extends Activity
         queueID.add(tempID);
     }
 
+    private void downloadContent(String path)
+    {
+        File f = new File(path);
+        String name = f.getName();
+        name = name.replace("_", " ");
+
+        Log.d("Downloading", name);
+
+        Uri tempUri = Uri.parse(path);
+        Long tempID = DownloadData(tempUri, name);
+        queueID.add(tempID);
+    }
+
     private void prepareLauncherUpdateButton(String path)
     {
         ImageButton LayoutButton = (ImageButton) findViewById(R.id.installLauncher);
@@ -175,43 +194,6 @@ public class HomeActivity extends Activity
         startActivity(install);
     }
 
-    public void updateContent()
-    {
-        dmp = new DownloadMoviesAndPosters();
-        List<String> movieQueue = new ArrayList<>();
-        List<String> posterQueue = new ArrayList<>();
-        List<String> movieNames = new ArrayList<>();
-        List<String> posterNames = new ArrayList<>();
-
-        try {movieQueue = dmp.returnMovies();}
-        catch(NullPointerException e){e.printStackTrace();}
-        try {posterQueue = dmp.returnPosters();}
-        catch(NullPointerException e){e.printStackTrace();}
-        try {movieNames = dmp.returnMoviesNames();}
-        catch(NullPointerException e){e.printStackTrace();}
-        try {posterNames = dmp.returnPosterNames();}
-        catch(NullPointerException e){e.printStackTrace();}
-
-        try{
-            for(int i = 0; i < movieNames.size(); i++)
-            {
-                Uri tempUri = Uri.parse(movieQueue.get(i));
-                Long tempID = DownloadData(tempUri, movieNames.get(i));
-                queueID.add(tempID);
-            }
-        }
-        catch(Exception e) {e.printStackTrace();}
-
-        try{
-            for(int i = 0; i < posterNames.size(); i++)
-            {
-                Uri tempUri = Uri.parse(posterQueue.get(i));
-                Long tempID = DownloadData(tempUri, posterNames.get(i));
-                queueID.add(tempID);
-            }
-        }
-        catch(Exception e) {e.printStackTrace();}
-    }
 
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
@@ -230,7 +212,12 @@ public class HomeActivity extends Activity
         request.setDescription("Movie Menu update"); //Description of the download
 
         //Set the local destination for the downloaded file to a path within the application's external files directory
-        request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Saveposition of APK
+        if(name.contains(".m-experience") || name.contains(".p-experience")) //It's a poster or movie
+        {
+            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_MOVIES, name); //Saveposition of APK
+        }
+        else
+            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Saveposition of APK
 
         //Enqueue download and save the referenceId
         downloadReference = downloadManager.enqueue(request);
@@ -250,14 +237,16 @@ public class HomeActivity extends Activity
             {
                 downloadMovieMenu();
             }
-            if(message == "update launcher")
+            else if(message == "update launcher")
             {
                 downloadLauncher();
             }
-            if(message == "update content")
+
+            else
             {
-                updateContent();
+                downloadContent(message);
             }
+
         }
     };
 
@@ -281,6 +270,8 @@ public class HomeActivity extends Activity
 
                     //This is String I pass to openFile method
                     String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                    String title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                    Log.d("title of download", title);
 
                     if(savedFilePath.contains("Launcher"))
                         prepareLauncherUpdateButton(savedFilePath);

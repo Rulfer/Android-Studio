@@ -51,7 +51,7 @@ public class DownloadMoviesAndPosters
 
     public List<String> returnMoviesNames() {return moviesToDownloadNames; }
 
-    public List<String> returnPosterNames() {return postersToDownloadNames; }
+    public List<String> returnPosterNames() {Log.d("Returning", "" + postersToDownloadNames.size()); return postersToDownloadNames; }
 
     public void scanForMoviesAndPosters()
     {
@@ -198,13 +198,11 @@ public class DownloadMoviesAndPosters
 
                 if (!foundMovie) {
                     Log.d("MISSING", movieName);
-                    Log.d("Download link", downloadLinks.get(i) + ".m-experience");
                     moviesToDownload.add(downloadLinks.get(i) + ".m-experience");
                     moviesToDownloadNames.add(movieName);
                 }
                 if (!foundPoster) {
                     Log.d("MISSING", posterName);
-                    Log.d("Download link", downloadLinks.get(i) + ".p-experience");
                     postersToDownload.add(downloadLinks.get(i) + ".p-experience");
                     postersToDownloadNames.add(posterName);
                 }
@@ -213,6 +211,7 @@ public class DownloadMoviesAndPosters
                 foundPoster = false;
             }
 
+            Log.d("pls giev size", "" + postersToDownloadNames.size());
             parsingComplete = true;
         }
         catch(Exception e)
