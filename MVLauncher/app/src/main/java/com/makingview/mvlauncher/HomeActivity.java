@@ -39,6 +39,7 @@ public class HomeActivity extends Activity
     CheckAppVersion cav;
     RequestPermissions rp;
     SaveAndLoad sal;
+    DownloadMoviesAndPosters map;
 
     private String movieMenuApkPath = "http://video.makingview.no/apps/gearVR/apks/MovieMenu.apk";
     private String launcherApkPath = "http://video.makingview.no/apps/gearVR/apks/app-release.apk";
@@ -56,6 +57,8 @@ public class HomeActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        rp = new RequestPermissions(HomeActivity.this);
+
         checkIfUpdateButtonsShouldBeVisible();
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
@@ -65,7 +68,10 @@ public class HomeActivity extends Activity
                 new IntentFilter("custom-event-name"));
 
         initiateAlarm();
-        rp = new RequestPermissions(HomeActivity.this);
+
+
+        map = new DownloadMoviesAndPosters();
+        map.scanForMoviesAndPosters();
     }
 
     private void checkIfUpdateButtonsShouldBeVisible()
@@ -73,21 +79,17 @@ public class HomeActivity extends Activity
         cav = new CheckAppVersion();
         cav.checkAllApps(HomeActivity.this);
 
-        Log.d("checkapks", "1");
         if(cav.returnLauncher() == true)
         {
-            Log.d("checkapks", "2");
             ImageButton LauncherButton = (ImageButton) findViewById(R.id.installLauncher);
             LauncherButton.setVisibility(View.VISIBLE);
         }
         if(cav.returnMovieMenu() == true)
         {
-            Log.d("checkapks", "3");
             ImageButton MovieMenuButton = (ImageButton) findViewById(R.id.installMovieMenu);
             MovieMenuButton.setVisibility(View.VISIBLE);
         }
 
-        Log.d("checkapks", "4");
         cav.reset();
     }
 

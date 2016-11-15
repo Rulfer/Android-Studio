@@ -135,15 +135,6 @@ public class CheckAppVersion
 
     private int checkMovieMenu(Context context)
     {
-        /*
-        String movieMenuPath = sav.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
-            final PackageManager pm = context.getPackageManager();
-            PackageInfo info = pm.getPackageArchiveInfo(movieMenuPath, 0);
-
-            if(Integer.parseInt(info.versionName) > movieMenuVersion)
-            {
-                updateMovieMenu = true;
-            }*/
         int temp;
         String pName = "com.MakingView.movieMenu";
         PackageManager pm = context.getPackageManager();
