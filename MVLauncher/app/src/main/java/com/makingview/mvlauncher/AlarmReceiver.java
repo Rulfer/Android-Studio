@@ -82,8 +82,6 @@ public class AlarmReceiver extends BroadcastReceiver
         {
             movieQueue = new ArrayList<>(dmp.returnMovies());
             posterQueue = new ArrayList<>(dmp.returnPosters());
-            movieNames = new ArrayList<>(dmp.returnMoviesNames());
-            posterNames = new ArrayList<>(dmp.returnPosterNames());
         }
 
         if(dmp.codeFailed == false)

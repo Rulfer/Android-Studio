@@ -1,5 +1,6 @@
 package com.makingview.mvlauncher;
 
+import android.app.DownloadManager;
 import android.os.Environment;
 import android.util.Log;
 
@@ -49,9 +50,6 @@ public class DownloadMoviesAndPosters
         return postersToDownload;
     }
 
-    public List<String> returnMoviesNames() {return moviesToDownloadNames; }
-
-    public List<String> returnPosterNames() {Log.d("Returning", "" + postersToDownloadNames.size()); return postersToDownloadNames; }
 
     public void scanForMoviesAndPosters()
     {
@@ -196,7 +194,8 @@ public class DownloadMoviesAndPosters
                     }
                 }
 
-                if (!foundMovie) {
+                if (!foundMovie)
+                {
                     Log.d("MISSING", movieName);
                     moviesToDownload.add(downloadLinks.get(i) + ".m-experience");
                     moviesToDownloadNames.add(movieName);
