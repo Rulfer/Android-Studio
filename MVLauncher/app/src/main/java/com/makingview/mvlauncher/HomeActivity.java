@@ -52,8 +52,6 @@ public class HomeActivity extends Activity
 
     private DownloadManager downloadManager;
 
-    private List<String> namesOfDownloads = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -128,21 +126,12 @@ public class HomeActivity extends Activity
             String name = f.getName();
             name = name.replace("_", " ");
 
-            boolean found = false;
-            for(String tempName:namesOfDownloads)
-            {
-                if(tempName.equals(name))
-                {
-                    Log.d("Add to downloads", name);
-                    found = true;
-                }
-            }
+            boolean found = checkForDownload(name);
 
             if(found == false)
             {
                 Uri tempUri = Uri.parse(path);
                 Long trash = DownloadData(tempUri, name);
-                namesOfDownloads.add(name);
             }
         }
 
@@ -244,21 +233,23 @@ public class HomeActivity extends Activity
         startActivity(install);
     }
 
-    public void displayDownloads(View view)
+    private boolean checkForDownload(String name)
     {
-        /*Intent intent = new Intent();
-        intent.setAction(DownloadManager.ACTION_VIEW_DOWNLOADS);
-        startActivity(intent);*/
-
+        boolean found = false;
+        String title;
         DownloadManager manager = (DownloadManager)getSystemService(HomeActivity.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         Cursor c = manager.query(query);
         while(c.moveToNext())
         {
-            String title = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
-
-            Log.d("title", title);
+            title = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
+            if(title.equals(name))
+            {
+                Log.d("checkForDownload", name);
+                found = true;
+            }
         }
+        return found;
     }
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
@@ -348,22 +339,6 @@ public class HomeActivity extends Activity
                         {
                             e.printStackTrace();
                         }
-                    }
-
-                    try
-                    {
-                        for(String tempName:namesOfDownloads)
-                        {
-                            if(tempName.equals(title))
-                            {
-                                namesOfDownloads.remove(title);
-                            }
-                        }
-                    }
-
-                    catch (NullPointerException e)
-                    {
-                        e.printStackTrace();
                     }
                 }
 
