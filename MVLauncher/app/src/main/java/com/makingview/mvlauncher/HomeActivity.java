@@ -145,6 +145,7 @@ public class HomeActivity extends Activity
         if(found == false) {
             Uri tempUri = Uri.parse(path);
             Long trash = DownloadData(tempUri, name);
+            namesOfDownloads.add(name);
         }
     }
 
