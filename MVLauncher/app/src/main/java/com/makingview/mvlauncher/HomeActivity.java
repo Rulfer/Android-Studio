@@ -244,7 +244,22 @@ public class HomeActivity extends Activity
         startActivity(install);
     }
 
+    public void displayDownloads(View view)
+    {
+        /*Intent intent = new Intent();
+        intent.setAction(DownloadManager.ACTION_VIEW_DOWNLOADS);
+        startActivity(intent);*/
 
+        DownloadManager manager = (DownloadManager)getSystemService(HomeActivity.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        Cursor c = manager.query(query);
+        while(c.moveToNext())
+        {
+            String title = c.getString(c.getColumnIndex(DownloadManager.COLUMN_TITLE));
+
+            Log.d("title", title);
+        }
+    }
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
     //create the functionality ourself.
@@ -305,8 +320,6 @@ public class HomeActivity extends Activity
             try
             {
                 Bundle extras = intent.getExtras();
-                Log.d("contents", "" + extras.describeContents());
-                Log.d("contents", "" + extras.toString());
                 DownloadManager.Query DownloadQuery = new DownloadManager.Query();
                 DownloadQuery.setFilterById(extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID));
 
