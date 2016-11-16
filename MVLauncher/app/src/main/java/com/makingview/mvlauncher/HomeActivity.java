@@ -160,11 +160,26 @@ public class HomeActivity extends Activity
         sal = new SaveAndLoad();
 
         try{
-            String launcherAPK = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
-            File file = new File(launcherAPK);
-            boolean result;
-            if(file.isFile())
-                result = file.delete();
+            File f = new File(path);
+            String remove = f.getName();
+            String name = path.replace(remove, "");
+
+            File folder = new File(name);
+            File newName = new File(path);
+
+            File[] files = folder.listFiles();
+
+            for (int i = 0; i < files.length; i++)
+            {
+                if (files[i].isFile())
+                {
+                    if (!files[i].getName().equals(newName.getName()))
+                    {
+                        File file = new File(files[i].getAbsolutePath());
+                        boolean result = file.delete();
+                    }
+                }
+            }
         }
         catch(Exception e)
         {
@@ -183,11 +198,26 @@ public class HomeActivity extends Activity
         sal = new SaveAndLoad();
 
         try{
-            String movieMenuAPK = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
-            File file = new File(movieMenuAPK);
-            boolean result;
-            if(file.isFile())
-                result = file.delete();
+            File f = new File(path);
+            String remove = f.getName();
+            String name = path.replace(remove, "");
+
+            File folder = new File(name);
+            File newName = new File(path);
+
+            File[] files = folder.listFiles();
+
+            for (int i = 0; i < files.length; i++)
+            {
+                if (files[i].isFile())
+                {
+                    if (!files[i].getName().equals(newName.getName()))
+                    {
+                        File file = new File(files[i].getAbsolutePath());
+                        boolean result = file.delete();
+                    }
+                }
+            }
         }
         catch(Exception e)
         {
