@@ -31,7 +31,7 @@ public class DownloadMoviesAndPosters
     private List<String> moviesToDownloadNames = new ArrayList<>();
     private List<String> postersToDownloadNames = new ArrayList<>();
 
-    private String movieFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString();
+    private String movieFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString() + "/";
     private String xmlPath = "http://video.makingview.no/apps/gearVR/makingview.xml";
 
     private XmlPullParserFactory xmlFactoryObject;
@@ -181,7 +181,6 @@ public class DownloadMoviesAndPosters
                 String movieName = names.get(i) + ".m-experience";
                 for (int j = 0; j < localMovies.size(); j++) {
                     if (movieName.equals(localMovies.get(j))) {
-                        Log.d("FOUND", movieName);
                         foundMovie = true;
                     }
                 }
@@ -189,7 +188,6 @@ public class DownloadMoviesAndPosters
                 String posterName = names.get(i) + ".p-experience";
                 for (int j = 0; j < localPosters.size(); j++) {
                     if (posterName.equals(localPosters.get(j))) {
-                        Log.d("FOUND", posterName);
                         foundPoster = true;
                     }
                 }

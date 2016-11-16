@@ -51,10 +51,7 @@ public class HomeActivity extends Activity
 
     private DownloadManager downloadManager;
 
-    List<String> movieQueue = new ArrayList<>();
-    List<String> posterQueue = new ArrayList<>();
-    List<String> movieNames = new ArrayList<>();
-    List<String> posterNames = new ArrayList<>();
+    private List<String> namesOfDownloads = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -110,13 +107,13 @@ public class HomeActivity extends Activity
     public void downloadMovieMenu()
     {
         Uri tempUri = Uri.parse(movieMenuApkPath);
-        DownloadData(tempUri, "MovieMenu.apk");
+        Long trash = DownloadData(tempUri, "MovieMenu.apk");
     }
 
     public void downloadLauncher()
     {
         Uri tempUri = Uri.parse(launcherApkPath);
-        DownloadData(tempUri, "Launcher.apk");
+        Long trash = DownloadData(tempUri, "Launcher.apk");
     }
 
     private void downloadContent(String path)
@@ -125,10 +122,30 @@ public class HomeActivity extends Activity
         String name = f.getName();
         name = name.replace("_", " ");
 
-        Log.d("Downloading", name);
+        boolean found = false;
 
-        Uri tempUri = Uri.parse(path);
-        DownloadData(tempUri, name);
+        try{
+            for(String tempName:namesOfDownloads)
+            {
+                if(tempName.equals(name))
+                {
+                    found = true;
+                }
+            }
+        }
+
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+
+        Log.d("Downloading", name);
+        Log.d("Url", path);
+
+        if(found == false) {
+            Uri tempUri = Uri.parse(path);
+            Long trash = DownloadData(tempUri, name);
+        }
     }
 
     private void prepareLauncherUpdateButton(String path)
@@ -193,7 +210,9 @@ public class HomeActivity extends Activity
     //Function that initiates the Android Download Manager class.
     //This class allows us to download files and display the download queue, without having to
     //create the functionality ourself.
-    public void DownloadData (Uri uri, String name) {
+    public Long DownloadData (Uri uri, String name) {
+
+        Long downloadReference;
 
         downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE); //A reference to the download class
         DownloadManager.Request request = new DownloadManager.Request(uri); //The file to download
@@ -207,10 +226,16 @@ public class HomeActivity extends Activity
         //Set the local destination for the downloaded file to a path within the application's external files directory
         if(name.contains(".m-experience") || name.contains(".p-experience")) //It's a poster or movie
         {
+            Log.d("Downloading", "video/poster");
             request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_MOVIES, name); //Saveposition of APK
         }
         else
+        {
+            Log.d("Downloading", "apk");
             request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Saveposition of APK
+        }
+        downloadReference = downloadManager.enqueue(request);
+        return downloadReference;
     }
 
     //This reciever is used by AlarmReciever.java to tell this class that it should download the XML document
@@ -252,10 +277,6 @@ public class HomeActivity extends Activity
 
                 if (cursor.moveToFirst())
                 {
-                    /*DownloadManager.Query query = new DownloadManager.Query();
-                    query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1));
-                    cursor.moveToFirst();*/
-
                     //This is String I pass to openFile method
                     String savedFilePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
                     String title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE));
@@ -265,6 +286,22 @@ public class HomeActivity extends Activity
                         prepareLauncherUpdateButton(savedFilePath);
                     if(savedFilePath.contains("MovieMenu"))
                         prepareMovieMenuUpdateButton(savedFilePath);
+
+                    try
+                    {
+                        for(String tempName:namesOfDownloads)
+                        {
+                            if(tempName.equals(title))
+                            {
+                                namesOfDownloads.remove(title);
+                            }
+                        }
+                    }
+
+                    catch (NullPointerException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
 
                 else

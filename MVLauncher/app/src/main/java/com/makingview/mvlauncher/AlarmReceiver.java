@@ -41,16 +41,6 @@ public class AlarmReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.drawable.uuuuuwat);
-        mBuilder.setContentTitle("My notification");
-        mBuilder.setContentText("Hello World!");
-        int mNotificationId = 001;
-
-        NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());*/
-
         rxf = new ReadXmlFile();
         rxf.fetchXML();
 
