@@ -331,18 +331,8 @@ public class HomeActivity extends Activity
                     if(savedFilePath.contains("MovieMenu"))
                         prepareMovieMenuUpdateButton(savedFilePath);
 
-                    /*if(savedFilePath.contains(".m-experience") || savedFilePath.contains(".p-experience"))
-                    {
-                        try{
-                            Log.d("Moving", title);
-                            File file = new File(savedFilePath);
-                            file.renameTo(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString() + "/" + title));
-                        }
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }*/
+                    downloadManager.remove(extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID));
+
                 }
 
                 else
