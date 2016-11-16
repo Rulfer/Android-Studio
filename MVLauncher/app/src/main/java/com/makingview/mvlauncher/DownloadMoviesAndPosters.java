@@ -180,7 +180,43 @@ public class DownloadMoviesAndPosters
 
             int index = 0;
 
-            for(String name:names)
+            for (int i = 0; i < names.size(); i++)
+            {
+                String movieName = names.get(i) + ".m-experience";
+                String posterName = names.get(i) + ".p-experience";
+
+                for (int j = 0; j < localMovies.size(); j++)
+                {
+                    if (movieName.equals(localMovies.get(j)))
+                    {
+                        foundMovie = true;
+                    }
+                }
+
+                for (int j = 0; j < localPosters.size(); j++)
+                {
+                    if (posterName.equals(localPosters.get(j)))
+                    {
+                        foundPoster = true;
+                    }
+                }
+
+                if(!foundMovie)
+                {
+                    moviesToDownload.add(downloadLinks.get(i) + ".m-experience");
+                    moviesToDownloadNames.add(movieName);
+                }
+                if(!foundPoster)
+                {
+                    postersToDownload.add(downloadLinks.get(i) + ".p-experience");
+                    postersToDownloadNames.add(posterName);
+                }
+
+                foundMovie = false;
+                foundPoster = false;
+            }
+
+            /*for(String name:names)
             {
                 String movieName = name + ".m-experience";
                 String posterName = name + ".p-experience";
@@ -208,7 +244,7 @@ public class DownloadMoviesAndPosters
                 foundMovie = false;
                 foundPoster = false;
                 index ++;
-            }
+            }*/
             parsingComplete = true;
         }
         catch(Exception e)

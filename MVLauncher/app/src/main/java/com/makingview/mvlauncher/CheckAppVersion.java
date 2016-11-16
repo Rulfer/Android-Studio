@@ -76,9 +76,6 @@ public class CheckAppVersion
             final PackageManager pm = context.getPackageManager();
             PackageInfo info = pm.getPackageArchiveInfo(movieMenuAPK, 0);
 
-            Log.d("info", "code " + info.versionCode);
-            Log.d("info", "name" + info.versionName);
-
             if(info.versionCode < movieMenuValue) //This should probably be versionName instead
             {
                 updateMovieMenu = true;

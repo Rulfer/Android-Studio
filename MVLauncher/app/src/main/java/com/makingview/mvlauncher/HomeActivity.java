@@ -131,14 +131,15 @@ public class HomeActivity extends Activity
             boolean found = false;
             for(String tempName:namesOfDownloads)
             {
-                Log.d("Currently dowloading", tempName);
                 if(tempName.equals(name))
                 {
+                    Log.d("Add to downloads", name);
                     found = true;
                 }
             }
 
-            if(found == false) {
+            if(found == false)
+            {
                 Uri tempUri = Uri.parse(path);
                 Long trash = DownloadData(tempUri, name);
                 namesOfDownloads.add(name);
@@ -304,6 +305,8 @@ public class HomeActivity extends Activity
             try
             {
                 Bundle extras = intent.getExtras();
+                Log.d("contents", "" + extras.describeContents());
+                Log.d("contents", "" + extras.toString());
                 DownloadManager.Query DownloadQuery = new DownloadManager.Query();
                 DownloadQuery.setFilterById(extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID));
 
