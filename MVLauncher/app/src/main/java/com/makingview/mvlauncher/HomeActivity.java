@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
+import static android.os.Environment.DIRECTORY_MOVIES;
+
 /**
  * Created by Bård on 08.11.2016.
  */
@@ -268,11 +271,11 @@ public class HomeActivity extends Activity
         request.setDescription("Content update"); //Description of the download
 
         if(name.contains("MovieMenu.apk"))
-            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS + "/MovieMenu", name); //Where to save the downloaded file
+            request.setDestinationInExternalFilesDir(HomeActivity.this, DIRECTORY_DOWNLOADS + "/MovieMenu", name); //Where to save the downloaded file
         else if(name.contains("Launcher.apk"))
-            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS + "/Launcher", name); //Where to save the downloaded file
+            request.setDestinationInExternalFilesDir(HomeActivity.this, DIRECTORY_DOWNLOADS + "/Launcher", name); //Where to save the downloaded file
         else
-            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Where to save the downloaded file
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, name); //Where to save the downloaded file
 
 
         downloadReference = downloadManager.enqueue(request);
@@ -328,7 +331,7 @@ public class HomeActivity extends Activity
                     if(savedFilePath.contains("MovieMenu"))
                         prepareMovieMenuUpdateButton(savedFilePath);
 
-                    if(savedFilePath.contains(".m-experience") || savedFilePath.contains(".p-experience"))
+                    /*if(savedFilePath.contains(".m-experience") || savedFilePath.contains(".p-experience"))
                     {
                         try{
                             Log.d("Moving", title);
@@ -339,7 +342,7 @@ public class HomeActivity extends Activity
                         {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
                 }
 
                 else
