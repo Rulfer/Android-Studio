@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -118,34 +119,31 @@ public class HomeActivity extends Activity
 
     private void downloadContent(String path)
     {
-        File f = new File(path);
-        String name = f.getName();
-        name = name.replace("_", " ");
-
-        boolean found = false;
-
         try{
+            File f = new File(path);
+            String name = f.getName();
+            name = name.replace("_", " ");
+
+            boolean found = false;
             for(String tempName:namesOfDownloads)
             {
+                Log.d("Currently dowloading", tempName);
                 if(tempName.equals(name))
                 {
                     found = true;
                 }
+            }
+
+            if(found == false) {
+                Uri tempUri = Uri.parse(path);
+                Long trash = DownloadData(tempUri, name);
+                namesOfDownloads.add(name);
             }
         }
 
         catch (NullPointerException e)
         {
             e.printStackTrace();
-        }
-
-        Log.d("Downloading", name);
-        Log.d("Url", path);
-
-        if(found == false) {
-            Uri tempUri = Uri.parse(path);
-            Long trash = DownloadData(tempUri, name);
-            namesOfDownloads.add(name);
         }
     }
 
@@ -219,22 +217,12 @@ public class HomeActivity extends Activity
         DownloadManager.Request request = new DownloadManager.Request(uri); //The file to download
 
         //Setting title of request
-        request.setTitle("Downloading " + name); //Title of the download to be displayed on the phone
+        request.setTitle(name); //Title of the download to be displayed on the phone
 
-        //Setting description of request
-        request.setDescription("Movie Menu update"); //Description of the download
 
-        //Set the local destination for the downloaded file to a path within the application's external files directory
-        if(name.contains(".m-experience") || name.contains(".p-experience")) //It's a poster or movie
-        {
-            Log.d("Downloading", "video/poster");
-            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_MOVIES, name); //Saveposition of APK
-        }
-        else
-        {
-            Log.d("Downloading", "apk");
-            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Saveposition of APK
-        }
+        request.setDescription("Content update"); //Description of the download
+        request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Where to save the downloaded file
+
         downloadReference = downloadManager.enqueue(request);
         return downloadReference;
     }
@@ -287,6 +275,19 @@ public class HomeActivity extends Activity
                         prepareLauncherUpdateButton(savedFilePath);
                     if(savedFilePath.contains("MovieMenu"))
                         prepareMovieMenuUpdateButton(savedFilePath);
+
+                    if(savedFilePath.contains(".m-experience") || savedFilePath.contains(".p-experience"))
+                    {
+                        try{
+                            Log.d("Moving", title);
+                            File file = new File(savedFilePath);
+                            file.renameTo(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString() + "/" + title));
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
 
                     try
                     {

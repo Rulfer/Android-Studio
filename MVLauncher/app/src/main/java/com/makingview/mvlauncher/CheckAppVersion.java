@@ -65,6 +65,8 @@ public class CheckAppVersion
         }
         catch(Exception e) //It failed somewhere, so just redownload the file
         {
+            Log.d("Error reading Launcher", e.toString());
+            e.printStackTrace();
             updateLauncher = true;
         }
 
@@ -86,6 +88,8 @@ public class CheckAppVersion
         }
         catch(Exception e) //It failed somewhere, so just redownload the file
         {
+            Log.d("Error reading MovieMenu", e.toString());
+            e.printStackTrace();
             updateMovieMenu = true;
         }
     }

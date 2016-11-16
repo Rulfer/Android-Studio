@@ -8,6 +8,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -31,7 +32,8 @@ public class DownloadMoviesAndPosters
     private List<String> moviesToDownloadNames = new ArrayList<>();
     private List<String> postersToDownloadNames = new ArrayList<>();
 
-    private String movieFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString() + "/";
+    private String movieFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString();
+
     private String xmlPath = "http://video.makingview.no/apps/gearVR/makingview.xml";
 
     private XmlPullParserFactory xmlFactoryObject;
@@ -53,27 +55,26 @@ public class DownloadMoviesAndPosters
 
     public void scanForMoviesAndPosters()
     {
-        File folder = new File(movieFolder);
+        try
+        {
+            File folder = new File(movieFolder);
 
-        if(!folder.exists())
-            folder.mkdirs();
+            if (!folder.exists())
+                folder.mkdirs();
 
-        File[] files = folder.listFiles();
+            File[] files = folder.listFiles();
 
-        localMovies.clear();
-        localPosters.clear();
+            localMovies.clear();
+            localPosters.clear();
 
-        try{
             for (int i = 0; i < files.length; i++)
             {
                 if (files[i].isFile())
                 {
                     if (files[i].getName().contains(".m-experience")) {
-                        Log.d("found movie", files[i].getName());
                         localMovies.add(files[i].getName());
                     }
                     if (files[i].getName().contains(".p-experience")) {
-                        Log.d("found poster", files[i].getName());
                         localPosters.add(files[i].getName());
                     }
                 }
@@ -177,35 +178,40 @@ public class DownloadMoviesAndPosters
             boolean foundMovie = false;
             boolean foundPoster = false;
 
-            for (int i = 0; i < names.size(); i++) {
-                String movieName = names.get(i) + ".m-experience";
-                for (int j = 0; j < localMovies.size(); j++) {
-                    if (movieName.equals(localMovies.get(j))) {
-                        foundMovie = true;
-                    }
+            int index = 0;
+
+            for(String name:names)
+            {
+                String movieName = name + ".m-experience";
+                String posterName = name + ".p-experience";
+
+                for(String movName:localMovies)
+                {
+                    Log.d("Looking for", movName);
+                    Log.d("Compare to", movieName);
+                    if(movieName.equals(movName)){foundMovie = true;}
                 }
 
-                String posterName = names.get(i) + ".p-experience";
-                for (int j = 0; j < localPosters.size(); j++) {
-                    if (posterName.equals(localPosters.get(j))) {
-                        foundPoster = true;
-                    }
+                for(String posName:localPosters)
+                {
+                    if(posName.equals(posName)){foundPoster = true;}
                 }
 
                 if (!foundMovie)
                 {
                     Log.d("MISSING", movieName);
-                    moviesToDownload.add(downloadLinks.get(i) + ".m-experience");
+                    moviesToDownload.add(downloadLinks.get(index) + ".m-experience");
                     moviesToDownloadNames.add(movieName);
                 }
                 if (!foundPoster) {
                     Log.d("MISSING", posterName);
-                    postersToDownload.add(downloadLinks.get(i) + ".p-experience");
+                    postersToDownload.add(downloadLinks.get(index) + ".p-experience");
                     postersToDownloadNames.add(posterName);
                 }
 
                 foundMovie = false;
                 foundPoster = false;
+                index ++;
             }
 
             Log.d("pls giev size", "" + postersToDownloadNames.size());

@@ -32,7 +32,6 @@ public class SaveAndLoad
             PrintWriter writer = new PrintWriter(file, "UTF-8");
             writer.print(input);
             writer.close();
-            Log.d("save tester", "SAVED!");
         }
         catch(FileNotFoundException ex)
         {
