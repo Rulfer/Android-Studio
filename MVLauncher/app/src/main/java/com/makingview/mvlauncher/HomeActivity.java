@@ -80,13 +80,17 @@ public class HomeActivity extends Activity
         cav = new CheckAppVersion();
         cav.checkAllApps(HomeActivity.this);
 
+        sal = new SaveAndLoad();
+
         if(cav.returnLauncher() == true)
         {
+            launcherPath = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
             ImageButton LauncherButton = (ImageButton) findViewById(R.id.installLauncher);
             LauncherButton.setVisibility(View.VISIBLE);
         }
         if(cav.returnMovieMenu() == true)
         {
+            movieMenuPath = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
             ImageButton MovieMenuButton = (ImageButton) findViewById(R.id.installMovieMenu);
             MovieMenuButton.setVisibility(View.VISIBLE);
         }
@@ -158,7 +162,9 @@ public class HomeActivity extends Activity
         try{
             String launcherAPK = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/Launcher.txt");
             File file = new File(launcherAPK);
-            boolean result = file.delete();
+            boolean result;
+            if(file.isFile())
+                result = file.delete();
         }
         catch(Exception e)
         {
@@ -179,7 +185,9 @@ public class HomeActivity extends Activity
         try{
             String movieMenuAPK = sal.Load(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/MovieMenu.txt");
             File file = new File(movieMenuAPK);
-            boolean result = file.delete();
+            boolean result;
+            if(file.isFile())
+                result = file.delete();
         }
         catch(Exception e)
         {
@@ -221,7 +229,14 @@ public class HomeActivity extends Activity
 
 
         request.setDescription("Content update"); //Description of the download
-        request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Where to save the downloaded file
+
+        if(name.contains("MovieMenu.apk"))
+            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS + "/MovieMenu", name); //Where to save the downloaded file
+        else if(name.contains("Launcher.apk"))
+            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS + "/Launcher", name); //Where to save the downloaded file
+        else
+            request.setDestinationInExternalFilesDir(HomeActivity.this, Environment.DIRECTORY_DOWNLOADS, name); //Where to save the downloaded file
+
 
         downloadReference = downloadManager.enqueue(request);
         return downloadReference;

@@ -187,8 +187,6 @@ public class DownloadMoviesAndPosters
 
                 for(String movName:localMovies)
                 {
-                    Log.d("Looking for", movName);
-                    Log.d("Compare to", movieName);
                     if(movieName.equals(movName)){foundMovie = true;}
                 }
 
@@ -199,12 +197,10 @@ public class DownloadMoviesAndPosters
 
                 if (!foundMovie)
                 {
-                    Log.d("MISSING", movieName);
                     moviesToDownload.add(downloadLinks.get(index) + ".m-experience");
                     moviesToDownloadNames.add(movieName);
                 }
                 if (!foundPoster) {
-                    Log.d("MISSING", posterName);
                     postersToDownload.add(downloadLinks.get(index) + ".p-experience");
                     postersToDownloadNames.add(posterName);
                 }
@@ -213,8 +209,6 @@ public class DownloadMoviesAndPosters
                 foundPoster = false;
                 index ++;
             }
-
-            Log.d("pls giev size", "" + postersToDownloadNames.size());
             parsingComplete = true;
         }
         catch(Exception e)
